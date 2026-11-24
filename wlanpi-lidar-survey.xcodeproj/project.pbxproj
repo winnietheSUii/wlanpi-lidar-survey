@@ -1,0 +1,343 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		02A47BCCAAEDE0B6FF819791 /* CiscoColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75FF3B25F566A1A9CEFF4F3 /* CiscoColors.swift */; };
+		0BECB3AF18470FCF37420A67 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918183D8BBAFCAAE17FF3B56 /* SettingsSheet.swift */; };
+		28D15BB678F23FB56B0351E3 /* SurveyPointInspectorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A62D7542C41571C8DA338 /* SurveyPointInspectorSheet.swift */; };
+		2D5663B8E1F379CE42E08A44 /* SurveyReportExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78010D6A94532C8B1DF20AC1 /* SurveyReportExporter.swift */; };
+		375D909550BF7331306BC005 /* RoomPlan3DSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169176FD4DF8CA99C6E66B4 /* RoomPlan3DSceneView.swift */; };
+		570502CDF37CD8E509FA989E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8274B87C12B7871615F9ADAF /* ContentView.swift */; };
+		6677239E3AA9105B4D7617B8 /* SurveyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C47088CDFDC284FC74439F /* SurveyStore.swift */; };
+		785565182BC96AEB70AE1C37 /* ChannelSpectrumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32EE1BB456615E4ABD71060F /* ChannelSpectrumView.swift */; };
+		78A01C0AC0A70AE538EB011F /* CiscoFloorplanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7951118DC2CE6A0E0D80F6 /* CiscoFloorplanView.swift */; };
+		7C85D1F3FD43B0790ADF9029 /* SurveyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C897DBD164E2B580F0A8D0F /* SurveyModels.swift */; };
+		897A6A08516A90BBFBB1C2E0 /* DemoSurveyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D0AE5E550C3E02E084B303 /* DemoSurveyFactory.swift */; };
+		A169CD8ABFC7BC5C0BA950C7 /* CiscoHeatmapRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB99AB9EDC544E0F99E3FE6 /* CiscoHeatmapRenderer.swift */; };
+		A491907085B7FDDEE2087EE0 /* SavedMapsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0F626CB20C26F038AD43E8 /* SavedMapsSheet.swift */; };
+		A5F654C9A97949C85B2B21AD /* RoomPlanCaptureContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B38D7468E57F2DA83164974 /* RoomPlanCaptureContainer.swift */; };
+		A7FE3322AA6691272910D5A3 /* FloorplanCalibrationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCFF50FC7C3869035E4D176 /* FloorplanCalibrationSheet.swift */; };
+		B35303414BD913B066EEC2E3 /* WlanPiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A27C0E90EB7B76BBDA3A1C /* WlanPiClient.swift */; };
+		DC862FF924EA9978E3744C26 /* WlanPiLidarSurveyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064CE7FA3DD7178C49159E5 /* WlanPiLidarSurveyApp.swift */; };
+		FD9ED51B8D52B8208FCEA5FF /* APInspectorSheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDFCA1B37E6AF40624476EE /* APInspectorSheets.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		29C47088CDFDC284FC74439F /* SurveyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyStore.swift; sourceTree = "<group>"; };
+		32EE1BB456615E4ABD71060F /* ChannelSpectrumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelSpectrumView.swift; sourceTree = "<group>"; };
+		5C897DBD164E2B580F0A8D0F /* SurveyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyModels.swift; sourceTree = "<group>"; };
+		74A27C0E90EB7B76BBDA3A1C /* WlanPiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WlanPiClient.swift; sourceTree = "<group>"; };
+		78010D6A94532C8B1DF20AC1 /* SurveyReportExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyReportExporter.swift; sourceTree = "<group>"; };
+		7FCFF50FC7C3869035E4D176 /* FloorplanCalibrationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorplanCalibrationSheet.swift; sourceTree = "<group>"; };
+		8274B87C12B7871615F9ADAF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		918183D8BBAFCAAE17FF3B56 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
+		959797117B6C813BE19725DC /* wlanpi-lidar-survey.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "wlanpi-lidar-survey.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B38D7468E57F2DA83164974 /* RoomPlanCaptureContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomPlanCaptureContainer.swift; sourceTree = "<group>"; };
+		A75FF3B25F566A1A9CEFF4F3 /* CiscoColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CiscoColors.swift; sourceTree = "<group>"; };
+		C064CE7FA3DD7178C49159E5 /* WlanPiLidarSurveyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WlanPiLidarSurveyApp.swift; sourceTree = "<group>"; };
+		C14A62D7542C41571C8DA338 /* SurveyPointInspectorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyPointInspectorSheet.swift; sourceTree = "<group>"; };
+		C169176FD4DF8CA99C6E66B4 /* RoomPlan3DSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomPlan3DSceneView.swift; sourceTree = "<group>"; };
+		CB0F626CB20C26F038AD43E8 /* SavedMapsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedMapsSheet.swift; sourceTree = "<group>"; };
+		DE7951118DC2CE6A0E0D80F6 /* CiscoFloorplanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CiscoFloorplanView.swift; sourceTree = "<group>"; };
+		DEB99AB9EDC544E0F99E3FE6 /* CiscoHeatmapRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CiscoHeatmapRenderer.swift; sourceTree = "<group>"; };
+		DFDFCA1B37E6AF40624476EE /* APInspectorSheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APInspectorSheets.swift; sourceTree = "<group>"; };
+		F4D0AE5E550C3E02E084B303 /* DemoSurveyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoSurveyFactory.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		5407BE7FA37E18D799BE6F58 /* RoomPlan */ = {
+			isa = PBXGroup;
+			children = (
+				9B38D7468E57F2DA83164974 /* RoomPlanCaptureContainer.swift */,
+			);
+			path = RoomPlan;
+			sourceTree = "<group>";
+		};
+		563F701E348BAEB4D5F21F6D /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				F4D0AE5E550C3E02E084B303 /* DemoSurveyFactory.swift */,
+				74A27C0E90EB7B76BBDA3A1C /* WlanPiClient.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		6C69FDEFC7A9630416C5F24F /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				78010D6A94532C8B1DF20AC1 /* SurveyReportExporter.swift */,
+			);
+			path = Export;
+			sourceTree = "<group>";
+		};
+		89DD569FBFE58677547A702C = {
+			isa = PBXGroup;
+			children = (
+				BE6BDD8DD50E876955371E21 /* Sources */,
+				988E4DF411F51C4A19131B7B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9217CC905906F2D768ABF6E8 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				29C47088CDFDC284FC74439F /* SurveyStore.swift */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		988E4DF411F51C4A19131B7B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				959797117B6C813BE19725DC /* wlanpi-lidar-survey.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A16542B1F04BD3B4AB6C34DD /* App */ = {
+			isa = PBXGroup;
+			children = (
+				C064CE7FA3DD7178C49159E5 /* WlanPiLidarSurveyApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		BE6BDD8DD50E876955371E21 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				A16542B1F04BD3B4AB6C34DD /* App */,
+				6C69FDEFC7A9630416C5F24F /* Export */,
+				E50BBF0EB69E2F1B69AA9373 /* Models */,
+				563F701E348BAEB4D5F21F6D /* Networking */,
+				E8EAAFED7D9FE293E2AF9B34 /* Rendering */,
+				5407BE7FA37E18D799BE6F58 /* RoomPlan */,
+				9217CC905906F2D768ABF6E8 /* Store */,
+				DF899DB0494E8070B69C75C6 /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		DF899DB0494E8070B69C75C6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				DE7951118DC2CE6A0E0D80F6 /* CiscoFloorplanView.swift */,
+				8274B87C12B7871615F9ADAF /* ContentView.swift */,
+				C169176FD4DF8CA99C6E66B4 /* RoomPlan3DSceneView.swift */,
+				F650EB67F43372A6057914E1 /* Sheets */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E50BBF0EB69E2F1B69AA9373 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5C897DBD164E2B580F0A8D0F /* SurveyModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E8EAAFED7D9FE293E2AF9B34 /* Rendering */ = {
+			isa = PBXGroup;
+			children = (
+				A75FF3B25F566A1A9CEFF4F3 /* CiscoColors.swift */,
+				DEB99AB9EDC544E0F99E3FE6 /* CiscoHeatmapRenderer.swift */,
+			);
+			path = Rendering;
+			sourceTree = "<group>";
+		};
+		F650EB67F43372A6057914E1 /* Sheets */ = {
+			isa = PBXGroup;
+			children = (
+				DFDFCA1B37E6AF40624476EE /* APInspectorSheets.swift */,
+				32EE1BB456615E4ABD71060F /* ChannelSpectrumView.swift */,
+				7FCFF50FC7C3869035E4D176 /* FloorplanCalibrationSheet.swift */,
+				CB0F626CB20C26F038AD43E8 /* SavedMapsSheet.swift */,
+				918183D8BBAFCAAE17FF3B56 /* SettingsSheet.swift */,
+				C14A62D7542C41571C8DA338 /* SurveyPointInspectorSheet.swift */,
+			);
+			path = Sheets;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		486AEC2DF6243E85C1DA7490 /* wlanpi-lidar-survey */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3C82C9CC0F02B6BDEE9AD9A0 /* Build configuration list for PBXNativeTarget "wlanpi-lidar-survey" */;
+			buildPhases = (
+				161E27C4EFF0FF1FBA44DB2D /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "wlanpi-lidar-survey";
+			packageProductDependencies = (
+			);
+			productName = "wlanpi-lidar-survey";
+			productReference = 959797117B6C813BE19725DC /* wlanpi-lidar-survey.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		50E182978044585CF97EEF16 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 82D7863302A37F4E5F1A55DC /* Build configuration list for PBXProject "wlanpi-lidar-survey" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 89DD569FBFE58677547A702C;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 988E4DF411F51C4A19131B7B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				486AEC2DF6243E85C1DA7490 /* wlanpi-lidar-survey */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		161E27C4EFF0FF1FBA44DB2D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD9ED51B8D52B8208FCEA5FF /* APInspectorSheets.swift in Sources */,
+				785565182BC96AEB70AE1C37 /* ChannelSpectrumView.swift in Sources */,
+				02A47BCCAAEDE0B6FF819791 /* CiscoColors.swift in Sources */,
+				78A01C0AC0A70AE538EB011F /* CiscoFloorplanView.swift in Sources */,
+				A169CD8ABFC7BC5C0BA950C7 /* CiscoHeatmapRenderer.swift in Sources */,
+				570502CDF37CD8E509FA989E /* ContentView.swift in Sources */,
+				897A6A08516A90BBFBB1C2E0 /* DemoSurveyFactory.swift in Sources */,
+				A7FE3322AA6691272910D5A3 /* FloorplanCalibrationSheet.swift in Sources */,
+				375D909550BF7331306BC005 /* RoomPlan3DSceneView.swift in Sources */,
+				A5F654C9A97949C85B2B21AD /* RoomPlanCaptureContainer.swift in Sources */,
+				A491907085B7FDDEE2087EE0 /* SavedMapsSheet.swift in Sources */,
+				0BECB3AF18470FCF37420A67 /* SettingsSheet.swift in Sources */,
+				7C85D1F3FD43B0790ADF9029 /* SurveyModels.swift in Sources */,
+				28D15BB678F23FB56B0351E3 /* SurveyPointInspectorSheet.swift in Sources */,
+				2D5663B8E1F379CE42E08A44 /* SurveyReportExporter.swift in Sources */,
+				6677239E3AA9105B4D7617B8 /* SurveyStore.swift in Sources */,
+				B35303414BD913B066EEC2E3 /* WlanPiClient.swift in Sources */,
+				DC862FF924EA9978E3744C26 /* WlanPiLidarSurveyApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5238859E2BA6C930C9CA618B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 9;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		77B2D35D4A26E9A1F802E37E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.winniethesuii.wlanpi-lidar-survey";
+			};
+			name = Release;
+		};
+		AD05DD49CDEEDBF6FF10F70A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 9;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CC0F5B389280B6C78E0EB71A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.winniethesuii.wlanpi-lidar-survey";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3C82C9CC0F02B6BDEE9AD9A0 /* Build configuration list for PBXNativeTarget "wlanpi-lidar-survey" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC0F5B389280B6C78E0EB71A /* Debug */,
+				77B2D35D4A26E9A1F802E37E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		82D7863302A37F4E5F1A55DC /* Build configuration list for PBXProject "wlanpi-lidar-survey" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD05DD49CDEEDBF6FF10F70A /* Debug */,
+				5238859E2BA6C930C9CA618B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 50E182978044585CF97EEF16 /* Project object */;
+}

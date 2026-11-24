@@ -1,4 +1,4 @@
-name: LidarTest
+name: wlanpi-lidar-survey
 options:
   bundleIdPrefix: com.winniethesuii
 settings:
@@ -29,7 +29,7 @@ settings:
       SWIFT_COMPILATION_MODE: wholemodule
       SWIFT_OPTIMIZATION_LEVEL: "-O"
 targets:
-  LidarTest:
+  wlanpi-lidar-survey:
     type: application
     platform: iOS
     settings:

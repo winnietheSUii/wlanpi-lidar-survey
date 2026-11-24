@@ -31,7 +31,7 @@ An iOS / iPadOS (iOS 17+) Wi-Fi RF Site Survey application that pairs **Apple Li
 ```text
 Sources/
 ├── App/
-│   └── LidarTestApp.swift              # @main entry point
+│   └── WlanPiLidarSurveyApp.swift      # @main entry point
 ├── Models/
 │   └── SurveyModels.swift              # WLAN Pi JSON contract, RoomPlan geometry, Calibration math
 ├── Networking/
@@ -94,10 +94,10 @@ Connect your iPad/iPhone to the WLAN Pi over any supported transport (built-in p
 ### Generate Project & Build
 ```bash
 xcodegen generate
-open LidarTest.xcodeproj
+open wlanpi-lidar-survey.xcodeproj
 ```
 
 Or build from CLI for Simulator:
 ```bash
-xcodebuild -project LidarTest.xcodeproj -scheme LidarTest -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build
+xcodebuild -project wlanpi-lidar-survey.xcodeproj -scheme wlanpi-lidar-survey -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build
 ```
