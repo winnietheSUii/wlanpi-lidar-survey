@@ -1,16 +1,32 @@
-# Build & IPA artifacts
+# Agent / local tool state
+/.agents/
+/.aws/
+/.codex/
+/.system_generated/
+/scratch/
+
+# Python / WLAN Pi backend
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+/.survey-data/
+
+# iOS Build & IPA artifacts
 build/
 ipa-staging/
 Payload/
 *.ipa
 *.bak
+*.hmap
+*.dSYM.zip
+*.dSYM
 
 # Xcode & macOS
 .DS_Store
+Thumbs.db
+DerivedData/
+xcuserdata/
 *.xcuserdatad
 *.xcworkspace/xcuserdata/
-DerivedData/
-*.hmap
-*.ipa
-*.dSYM.zip
-*.dSYM

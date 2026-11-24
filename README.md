@@ -1,6 +1,54 @@
-# WiFi LiDAR Survey (`wlanpi-lidar-survey`)
+# wlanpi-lidar-survey
 
-An iOS / iPadOS (iOS 17+) Wi-Fi RF Site Survey application that pairs **Apple LiDAR + RoomPlan + ARKit** with a **WLAN Pi R4** dual-radio RF survey probe to produce real-time 2D Cisco Prime-style thermal heatmaps, 3D Cisco DNA-style volumetric coverage views, channel spectrum analysis, and executive PDF reports.
+**wlanpi-lidar-survey** combines a **WLAN Pi R4** dual-radio Wi-Fi survey backend and web dashboard with an **iOS / iPadOS (iOS 17+)** app using **Apple LiDAR + RoomPlan + ARKit** to produce real-time 2D Cisco Prime-style thermal heatmaps, 3D Cisco DNA-style volumetric coverage views, channel spectrum analysis, and executive PDF reports.
+
+---
+
+## Project Layout
+
+| Path | Contents |
+| --- | --- |
+| `ios/` | Modular SwiftUI iOS/iPadOS app (`Sources/`), `Info.plist`, `project.yml`, and `wlanpi-lidar-survey.xcodeproj` |
+| `wlanpi/` | Zero-dependency Python 3 WLAN Pi RF survey server (`server.py`) and web dashboard (`dashboard.html`) |
+
+```text
+wlanpi-lidar-survey/
+├── ios/
+│   ├── Info.plist
+│   ├── project.yml
+│   ├── wlanpi-lidar-survey.xcodeproj/
+│   └── Sources/
+│       ├── App/
+│       │   └── WlanPiLidarSurveyApp.swift      # @main entry point
+│       ├── Models/
+│       │   └── SurveyModels.swift              # WLAN Pi JSON contract, RoomPlan geometry, Calibration math
+│       ├── Networking/
+│       │   ├── WlanPiClient.swift              # HTTP polling, Bonjour (_wifisurvey._tcp), Pi sync, Demo Mode
+│       │   └── DemoSurveyFactory.swift         # Synthetic multi-band probe & sample office survey
+│       ├── Store/
+│       │   └── SurveyStore.swift               # App state, RoomPlan processing, Auto-Walk, AP centroid estimator
+│       ├── RoomPlan/
+│       │   └── RoomPlanCaptureContainer.swift  # RoomCaptureView wrapper + AR pose timer + Simulator fallback
+│       ├── Rendering/
+│       │   ├── CiscoColors.swift               # Cisco Prime thermal color stops & polygon math
+│       │   └── CiscoHeatmapRenderer.swift      # Thread-safe IDW contour generator & async cache controller
+│       ├── Export/
+│       │   └── SurveyReportExporter.swift      # Multi-page Executive PDF report generator
+│       └── Views/
+│           ├── ContentView.swift               # Main split/2D/3D/RoomScan dashboard
+│           ├── CiscoFloorplanView.swift        # Interactive 2D CAD & calibrated floorplan canvas
+│           ├── RoomPlan3DSceneView.swift       # Interactive 3D SceneKit room + domes + thermal sheet
+│           └── Sheets/
+│               ├── APInspectorSheets.swift     # AP list, deep inspector & client vendor list
+│               ├── ChannelSpectrumView.swift   # 2.4 / 5 / 6 GHz channel width & CCI spectrum chart
+│               ├── FloorplanCalibrationSheet.swift
+│               ├── SavedMapsSheet.swift
+│               ├── SettingsSheet.swift
+│               └── SurveyPointInspectorSheet.swift
+└── wlanpi/
+    ├── server.py                               # Dual-radio iw scan + monitor mode sniffer + REST/SSE API
+    └── dashboard.html                          # Live web analyzer & saved survey viewer
+```
 
 ---
 
@@ -26,78 +74,69 @@ An iOS / iPadOS (iOS 17+) Wi-Fi RF Site Survey application that pairs **Apple Li
 
 ---
 
-## Project Structure
+## Run on a WLAN Pi
 
-```text
-Sources/
-├── App/
-│   └── WlanPiLidarSurveyApp.swift      # @main entry point
-├── Models/
-│   └── SurveyModels.swift              # WLAN Pi JSON contract, RoomPlan geometry, Calibration math
-├── Networking/
-│   ├── WlanPiClient.swift              # HTTP polling, Bonjour (_wifisurvey._tcp), Pi sync, Demo Mode
-│   └── DemoSurveyFactory.swift         # Synthetic multi-band probe & sample office survey
-├── Store/
-│   └── SurveyStore.swift               # App state, RoomPlan processing, Auto-Walk, AP centroid estimator
-├── RoomPlan/
-│   └── RoomPlanCaptureContainer.swift  # RoomCaptureView wrapper + AR pose timer + Simulator fallback
-├── Rendering/
-│   ├── CiscoColors.swift               # Cisco Prime thermal color stops & polygon math
-│   └── CiscoHeatmapRenderer.swift      # Thread-safe IDW contour generator & async cache controller
-├── Export/
-│   └── SurveyReportExporter.swift      # Multi-page Executive PDF report generator
-└── Views/
-    ├── ContentView.swift               # Main split/2D/3D/RoomScan dashboard
-    ├── CiscoFloorplanView.swift        # Interactive 2D CAD & calibrated floorplan canvas
-    ├── RoomPlan3DSceneView.swift       # Interactive 3D SceneKit room + domes + thermal sheet
-    └── Sheets/
-        ├── APInspectorSheets.swift     # AP list, deep inspector & client vendor list
-        ├── ChannelSpectrumView.swift   # 2.4 / 5 / 6 GHz channel width & CCI spectrum chart
-        ├── FloorplanCalibrationSheet.swift
-        ├── SavedMapsSheet.swift
-        ├── SettingsSheet.swift
-        └── SurveyPointInspectorSheet.swift
+Install `iw` and Python 3.10 or later on the WLAN Pi. From the repository root, start the server with the privileges needed for wireless scanning:
+
+```sh
+sudo python3 wlanpi/server.py
 ```
 
----
+Open `http://<wlan-pi-address>:8090/` on the same network to view the live web dashboard.
 
-## WLAN Pi R4 Probe Setup & API Contract
+### Environment Variables
 
-Connect your iPad/iPhone to the WLAN Pi over any supported transport (built-in presets + Bonjour `_wifisurvey._tcp` discovery):
+| Variable | Default | Description |
+| --- | --- | --- |
+| `SURVEY_PORT` | `8090` | HTTP server listen port |
+| `SURVEY_SCAN_IFACE` | *(auto-detect)* | Wireless interface used for `iw scan -u` |
+| `SURVEY_MON_IFACE` | *(auto-detect)* | Optional secondary USB monitor-mode interface |
+| `SURVEY_INTERVAL` | `0.5` | Scan loop interval in seconds |
+| `SURVEY_DATA_DIR` | `/var/lib/wifi-survey/sessions` | Directory for persisted survey JSON sessions |
+
+### WLAN Pi Transport Presets & HTTP Endpoints (Port `8090`)
 
 | Transport | Default Preset Host |
-| :--- | :--- |
+| --- | --- |
 | Bluetooth PAN (Wireless) | `10.43.0.1:8090` |
 | mDNS Auto | `wlanpi-9a0.local:8090` |
 | iPad LAN Direct | `10.42.0.1:8090` |
 | USB-C OTG | `198.18.42.1:8090` |
 | PC ICS LAN | `192.168.137.169:8090` |
 
-### HTTP Endpoints Expected on Port `8090`
-
-- `GET /api/health` → `200 OK` (probe discovery / health check)
-- `GET /api/scan` → JSON `ScanPayload` (`scan_id`, `hostname`, `interface`, `timestamp_unix`, `timestamp_iso`, `scan_duration_ms`, `ap_count`, `qbss_total_clients`, `band_counts`, `strongest_rssi`, `monitor`, `aps[]`)
-- `GET /api/surveys` → `{ "surveys": [ { "id", "name", "created_at", "point_count", "wall_count" } ] }`
-- `POST /api/surveys` → Stores a `SurveySessionExport` JSON payload (compacted automatically for fast Bluetooth PAN upload)
-- `GET /api/surveys/{id}` → Returns full `SurveySessionExport` JSON
-- `DELETE /api/surveys/{id}` → Deletes a saved survey on the Pi
+- `GET /` → Web dashboard (`wlanpi/dashboard.html`)
+- `GET /api/health` → Probe status & active interfaces
+- `GET /api/scan` → Latest `ScanPayload` JSON (`?fresh=1` waits for a fresh scan)
+- `GET /api/monitor` → Live monitor-mode retry % & client frame stats
+- `GET /api/stream` → Server-Sent Events (`text/event-stream`) live scan feed
+- `GET /api/surveys` → List saved surveys on the WLAN Pi
+- `POST /api/surveys` → Upload/save a `SurveySessionExport` JSON payload
+- `GET /api/surveys/{id}` → Fetch a saved survey JSON payload
+- `DELETE /api/surveys/{id}` → Delete a saved survey
 
 ---
 
-## Building the App
+## Build the iOS App
 
 ### Prerequisites
 - Xcode 15+ (iOS 17.0+ deployment target)
-- [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`xcodegen`)
-- Physical LiDAR iPad Pro / iPhone Pro for live RoomPlan scanning (or Xcode Simulator using **Settings → Demo / Mock WLAN Pi Probe → Load Sample Office Survey**)
+- [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`xcodegen`) — optional if opening the pre-generated `.xcodeproj`
+- Physical LiDAR-equipped iPad Pro or iPhone Pro for live RoomPlan scanning (or Xcode Simulator using **Settings → Demo / Mock WLAN Pi Probe → Load Sample Office Survey**)
 
 ### Generate Project & Build
-```bash
+
+```sh
+cd ios
 xcodegen generate
 open wlanpi-lidar-survey.xcodeproj
 ```
 
-Or build from CLI for Simulator:
-```bash
-xcodebuild -project wlanpi-lidar-survey.xcodeproj -scheme wlanpi-lidar-survey -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build
+Or build from CLI for the iOS Simulator:
+
+```sh
+xcodebuild -project ios/wlanpi-lidar-survey.xcodeproj \
+  -scheme wlanpi-lidar-survey \
+  -sdk iphonesimulator \
+  -destination 'generic/platform=iOS Simulator' \
+  build
 ```

@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cisco Wireless Assurance — WLAN Pi Analyzer</title>
+<style>
+  :root {
+    --cisco-navy: #0d274d;
+    --cisco-blue: #049fd9;
+    --cisco-blue-dark: #007cad;
+    --bg: #f4f6f9;
+    --panel: #ffffff;
+    --border: #dce1e8;
+    --border-light: #edf0f5;
+    --text: #1e293b;
+    --muted: #64748b;
+    --good: #16a34a;
+    --warn: #d97706;
+    --bad: #dc2626;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "CiscoSans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Cisco Catalyst Center Top Masthead */
+  .masthead {
+    background: var(--cisco-navy);
+    color: #ffffff;
+    height: 48px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .cisco-logo {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 16px;
+  }
+  .cisco-logo span {
+    display: block;
+    width: 2.5px;
+    background: var(--cisco-blue);
+    border-radius: 1px;
+  }
+  .brand-divider {
+    width: 1px;
+    height: 18px;
+    background: rgba(255,255,255,0.22);
+  }
+  .brand-sub {
+    color: #93c5fd;
+    font-weight: 400;
+    font-size: 13px;
+  }
+  .mast-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    color: #cbd5e1;
+  }
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    font-size: 11.5px;
+    color: #e2e8f0;
+  }
+  .status-chip.mon-on {
+    background: rgba(22,163,74,0.22);
+    border-color: rgba(74,222,128,0.45);
+    color: #86efac;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+  }
+  .dot.err { background: #ef4444; }
+
+  /* Cisco Secondary White Sub-Navbar */
+  .subnav {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
+  }
+  .tabs {
+    display: flex;
+    gap: 28px;
+    height: 100%;
+  }
+  .tab {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 4px;
+    cursor: pointer;
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    transition: color .15s, border-color .15s;
+  }
+  .tab:hover { color: var(--cisco-navy); }
+  .tab.active {
+    color: var(--cisco-navy);
+    border-bottom-color: var(--cisco-blue);
+  }
+  .subnav-meta {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  main {
+    padding: 20px 24px;
+    max-width: 1540px;
+    margin: 0 auto;
+  }
+  .hidden { display: none !important; }
+
+  /* Cisco Unified KPI Summary Strip (Calm, Non-Cluttered) */
+  .kpi-strip {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--cisco-blue);
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    margin-bottom: 18px;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+  }
+  .kpi-item {
+    padding: 14px 18px;
+    border-right: 1px solid var(--border-light);
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-item:last-child { border-right: none; }
+  .kpi-item:hover { background: #fafbfc; }
+  .kpi-lbl {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--muted);
+  }
+  .kpi-val {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--cisco-navy);
+    margin-top: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  /* 5-Second Hover-Dwell Progress & Floating Box */
+  [data-help] { position: relative; cursor: help; }
+  [data-help]::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--cisco-blue);
+    pointer-events: none;
+    opacity: 0;
+  }
+  [data-help].hover-arming::after {
+    width: 100%;
+    opacity: 1;
+    transition: width 5s linear;
+  }
+
+  .hover-tip {
+    position: fixed;
+    z-index: 2500;
+    width: 360px;
+    max-width: calc(100vw - 24px);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-top: 3px solid var(--cisco-blue);
+    border-radius: 4px;
+    padding: 12px 14px;
+    color: var(--text);
+    box-shadow: 0 10px 30px rgba(13,39,77,0.18);
+    font-size: 12.5px;
+    line-height: 1.55;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity .15s ease, transform .15s ease;
+  }
+  .hover-tip.visible { opacity: 1; transform: translateY(0); }
+  .hover-tip-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .hover-tip-title { font-weight: 700; color: var(--cisco-navy); font-size: 12.5px; }
+  .hover-tip-close { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 13px; }
+  .hover-tip code {
+    background: #f1f5f9;
+    color: var(--cisco-navy);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: ui-monospace, monospace;
+    font-size: 11.5px;
+  }
+  .hover-tip ul { margin: 5px 0 0 16px; }
+  .hover-tip li { margin-bottom: 3px; }
+
+  /* Monitor Channel Strip */
+  .mon-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 18px;
+    margin-bottom: 16px;
+  }
+  .mon-hdr { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px; color: var(--cisco-navy); }
+  .ch-bars { display: flex; align-items: flex-end; gap: 8px; height: 60px; }
+  .ch-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 22px; }
+  .ch-bar-bg { width: 100%; height: 42px; background: #edf0f5; border-radius: 2px; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+  .ch-bar-fill { width: 100%; background: var(--cisco-blue); }
+  .ch-bar-retry { width: 100%; background: var(--bad); }
+  .ch-lbl { font-size: 10px; color: var(--muted); font-family: ui-monospace, monospace; }
+
+  /* Cisco Table Panel & Filter Bar */
+  .panel-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+    overflow: hidden;
+  }
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-light);
+    align-items: center;
+  }
+  .filter-bar input, .filter-bar select {
+    background: #ffffff;
+    color: var(--text);
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 6px 11px;
+    font-size: 12.5px;
+    outline: none;
+  }
+  .filter-bar input:focus, .filter-bar select:focus {
+    border-color: var(--cisco-blue);
+  }
+  .panel-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cisco-navy);
+    margin-right: 8px;
+  }
+
+  table { width: 100%; border-collapse: collapse; background: var(--panel); }
+  th, td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 12.5px;
+  }
+  th {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #475569;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    user-select: none;
+  }
+  tr.clickable { cursor: pointer; transition: background .1s; }
+  tr.clickable:hover td { background: #f0f7fc; }
+  tr.selected-row td { background: #e6f4fb; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #334155; }
+
+  /* Calm Cisco Status Dots & Subtle Pills (No visual clutter) */
+  .band-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: #334155;
+  }
+  .band-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .bd-5 { background: var(--cisco-blue); }
+  .bd-24 { background: #64748b; }
+  .bd-6 { background: #7c3aed; }
+
+  .rssi-cell { display: inline-flex; align-items: center; gap: 8px; }
+  .bar-wrap { width: 44px; height: 5px; background: #e2e8f0; border-radius: 2px; overflow: hidden; display: inline-block; }
+  .bar { height: 100%; border-radius: 2px; }
+
+  .status-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .status-dot::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .st-ok { color: #334155; }
+  .st-ok::before { background: var(--good); }
+  .st-warn { color: #b45309; font-weight: 600; }
+  .st-warn::before { background: var(--warn); }
+
+  .subtle-pill {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 3px;
+    font-size: 11.5px;
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Cisco Catalyst Center Right-Side 360° Slide-Over Drawer */
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(13,39,77,0.25);
+    z-index: 1200;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .drawer {
+    background: #ffffff;
+    width: 520px;
+    max-width: 92vw;
+    height: 100vh;
+    box-shadow: -8px 0 30px rgba(13,39,77,0.18);
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--border);
+  }
+  .drawer-hdr {
+    padding: 16px 20px;
+    background: var(--cisco-navy);
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .drawer-hdr h3 { font-size: 16px; font-weight: 600; }
+  .drawer-hdr .sub { font-size: 12px; color: #93c5fd; font-family: ui-monospace, monospace; margin-top: 2px; }
+  .drawer-close {
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .drawer-close:hover { background: rgba(255,255,255,0.25); }
+  .drawer-body {
+    padding: 18px 20px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .sec-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--cisco-navy);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--border-light);
+    margin-bottom: 8px;
+  }
+  .kv-table {
+    width: 100%;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .kv-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 12.5px;
+    background: #ffffff;
+  }
+  .kv-row:nth-child(even) { background: #fafbfc; }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-k { color: var(--muted); font-weight: 500; }
+  .kv-v { color: var(--text); font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; text-align: right; }
+
+  .warn-item {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 3px solid var(--warn);
+    color: #92400e;
+    padding: 8px 11px;
+    border-radius: 3px;
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+  .ok-item {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-left: 3px solid var(--good);
+    color: #166534;
+    padding: 8px 11px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
+
+  /* Cisco Prime 2D + DNA 3D Workspace */
+  .cisco-shell { background: #ffffff; color: #1e293b; border-radius: 4px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(15,23,42,0.04); }
+  .cisco-top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .cisco-top label { display: flex; flex-direction: column; gap: 2px; font-weight: 600; color: #334155; font-size: 11px; }
+  .cisco-top select, .cisco-top button { background: #fff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 4px; padding: 5px 10px; font-size: 12px; cursor: pointer; }
+  .cisco-top button.mode-btn { font-weight: 600; }
+  .cisco-top button.mode-btn.active { background: var(--cisco-navy); color: #fff; border-color: var(--cisco-navy); }
+  .cisco-top button.primary { background: var(--cisco-blue); color: #fff; border-color: var(--cisco-blue-dark); font-weight: 600; }
+  .thermal-legend { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #1e293b; font-family: ui-monospace, monospace; }
+  .thermal-bar { width: 175px; height: 14px; border: 1px solid #64748b; background: linear-gradient(90deg, #7f0000 0%, #e02424 14%, #f97316 28%, #facc15 44%, #10d44a 58%, #06c2e8 72%, #1d4ed8 86%, #1e0a5c 100%); }
+  .cisco-body { display: flex; min-height: 650px; }
+  .ap-sidebar { width: 230px; flex-shrink: 0; background: #f8fafc; border-right: 1px solid var(--border); padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .ap-sidebar h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--cisco-navy); border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .ap-list { flex: 1; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+  .ap-item { display: flex; align-items: flex-start; gap: 6px; font-size: 11.5px; padding: 4px 5px; border-radius: 3px; cursor: pointer; }
+  .ap-item:hover { background: #e2e8f0; }
+  .ap-item small { color: #64748b; display: block; font-family: ui-monospace, monospace; font-size: 10px; }
+  .canvas-stage { flex: 1; position: relative; background: #ffffff; overflow: hidden; }
+  #hmCanvas { display: block; width: 100%; height: 650px; cursor: grab; }
+  #hmCanvas:active { cursor: grabbing; }
+  .dna-overlay { position: absolute; right: 16px; bottom: 16px; display: flex; align-items: flex-end; gap: 12px; pointer-events: none; }
+  .dna-legend { pointer-events: auto; background: rgba(255,255,255,0.96); border: 1px solid #cbd5e1; border-radius: 4px; padding: 8px 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px; font-size: 11px; color: #334155; }
+  .dna-bar-wrap { position: relative; width: 170px; padding-top: 16px; }
+  .dna-bar { display: flex; height: 11px; border-radius: 2px; overflow: hidden; }
+  .dna-bar .g { flex: 52; background: #16a34a; }
+  .dna-bar .o { flex: 23; background: linear-gradient(90deg, #4ade80 0%, #f59e0b 45%, #ef4444 100%); }
+  .dna-bar .r { flex: 25; background: #ef4444; }
+  .dna-tick { position: absolute; top: 0; font-weight: 800; font-size: 11px; font-family: ui-monospace, monospace; color: #1e293b; transform: translateX(-50%); }
+  .dna-pad { pointer-events: auto; background: rgba(255,255,255,0.96); border: 1px solid #cbd5e1; border-radius: 4px; padding: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: grid; grid-template-columns: repeat(3, 28px); gap: 3px; }
+  .dna-pad button { width: 28px; height: 26px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; border-radius: 3px; font-weight: 700; cursor: pointer; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- CISCO CATALYST CENTER MASTHEAD -->
+<header class="masthead">
+  <div class="brand">
+    <div class="cisco-logo" aria-hidden="true">
+      <span style="height:6px"></span><span style="height:11px"></span><span style="height:16px"></span>
+      <span style="height:11px"></span><span style="height:6px"></span><span style="height:11px"></span>
+      <span style="height:16px"></span><span style="height:11px"></span><span style="height:6px"></span>
+    </div>
+    <span>Cisco Wireless Assurance</span>
+    <span class="brand-divider"></span>
+    <span class="brand-sub">WLAN Pi R4 Sensor</span>
+  </div>
+  <div class="mast-right">
+    <span id="monBadge" class="status-chip">Monitor: Standby</span>
+    <span class="status-chip"><span id="statusDot" class="dot"></span><span id="metaInfo">Connecting...</span></span>
+  </div>
+</header>
+
+<!-- CISCO SUB-NAVIGATION BAR -->
+<nav class="subnav">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('live')">Access Points (RF Assurance)</button>
+    <button class="tab" onclick="switchTab('clients')">Client Devices &amp; Vendors</button>
+    <button class="tab" onclick="switchTab('surveys')">Site Survey Maps (2D Prime / 3D DNA)</button>
+  </div>
+  <div id="scanTick" class="subnav-meta"></div>
+</nav>
+
+<main>
+  <!-- TAB 1: ACCESS POINTS (RF ASSURANCE) -->
+  <section id="tab-live">
+    <div class="kpi-strip">
+      <div class="kpi-item" data-help="aps">
+        <div class="kpi-lbl">Detected Radios (BSSID)</div>
+        <div id="cTotal" class="kpi-val">-</div>
+      </div>
+      <div class="kpi-item" data-help="bands">
+        <div class="kpi-lbl">2.4 GHz / 5 GHz Radios</div>
+        <div id="cBands" class="kpi-val">-</div>
+      </div>
+      <div class="kpi-item" data-help="rssi">
+        <div class="kpi-lbl">Peak Signal (RSSI)</div>
+        <div id="cBest" class="kpi-val">-</div>
+      </div>
+      <div class="kpi-item" data-help="qbss">
+        <div class="kpi-lbl">Active Clients (AP QBSS)</div>
+        <div id="cQbssClients" class="kpi-val">-</div>
+      </div>
+      <div class="kpi-item" data-help="mon_clients">
+        <div class="kpi-lbl">Sniffed Clients (Monitor)</div>
+        <div id="cMonClients" class="kpi-val">-</div>
+      </div>
+      <div class="kpi-item" data-help="mon_retry">
+        <div class="kpi-lbl">Air Retry Rate (10s)</div>
+        <div id="cMonRetry" class="kpi-val">-</div>
+      </div>
+    </div>
+
+    <div id="monPanel" class="mon-panel hidden">
+      <div class="mon-hdr">
+        <div><strong>Monitor Mode Channel Utilization</strong> <span id="monSub" style="margin-left:8px;color:var(--muted)"></span></div>
+        <div style="color:var(--muted)"><span style="color:var(--cisco-blue)">■ Frames (<span id="cMonFrames">0</span>)</span> &nbsp; <span style="color:var(--bad)">■ Retries</span></div>
+      </div>
+      <div id="chBars" class="ch-bars"></div>
+    </div>
+
+    <div class="panel-card">
+      <div class="filter-bar">
+        <span class="panel-title">Radio Inventory</span>
+        <input id="qSearch" type="text" placeholder="Filter by SSID, BSSID, Vendor or Model..." oninput="renderLive()" style="min-width:260px">
+        <select id="qBand" onchange="renderLive()">
+          <option value="ALL">All Frequency Bands</option>
+          <option value="5GHz">5 GHz Band</option>
+          <option value="2.4GHz">2.4 GHz Band</option>
+          <option value="6GHz">6 GHz Band</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>SSID</th>
+              <th data-help="vendor_model">Vendor / Hardware Profile</th>
+              <th data-help="bssid">BSSID</th>
+              <th data-help="rssi">RSSI</th>
+              <th data-help="bands">Band &amp; Channel</th>
+              <th data-help="max_phy">Max PHY</th>
+              <th data-help="roam_pmf">Security &amp; Roaming</th>
+              <th data-help="qbss">Clients (Util%)</th>
+              <th data-help="audit">Assurance Health</th>
+            </tr>
+          </thead>
+          <tbody id="apRows"><tr><td colspan="9" style="color:var(--muted)">Scanning RF environment...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: CLIENTS & VENDORS -->
+  <section id="tab-clients" class="hidden">
+    <div class="panel-card" style="margin-bottom:18px">
+      <div class="filter-bar">
+        <span class="panel-title" data-help="qbss">1. AP-Reported Client Load (IEEE 802.11e QBSS Beacon Telemetry)</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>SSID</th>
+              <th data-help="vendor_model">Vendor / Profile</th>
+              <th data-help="bssid">BSSID</th>
+              <th data-help="bands">Band / Channel</th>
+              <th data-help="qbss">Associated Clients</th>
+              <th data-help="qbss_util">Channel Utilization</th>
+            </tr>
+          </thead>
+          <tbody id="qbssRows"><tr><td colspan="6" style="color:var(--muted)">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <div class="filter-bar" style="justify-content:space-between">
+        <span class="panel-title" data-help="mon_clients">2. Sniffed Client Devices &amp; OUI Vendors (Monitor Mode 30s Window)</span>
+        <span id="monClientStatus" style="font-size:12px;color:var(--muted)"></span>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Client MAC</th>
+              <th data-help="client_vendor">Endpoint Vendor (OUI)</th>
+              <th data-help="client_state">Association State</th>
+              <th>Associated AP (SSID / BSSID)</th>
+              <th data-help="rssi">RSSI</th>
+              <th>Channel</th>
+              <th data-help="mon_retry">Frames / Retry%</th>
+              <th>Last Seen</th>
+            </tr>
+          </thead>
+          <tbody id="clientRows"><tr><td colspan="8" style="color:var(--muted)">No monitor mode frames captured</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: CISCO PRIME 2D & CISCO DNA 3D ANALYZER -->
+  <section id="tab-surveys" class="hidden">
+    <div class="cisco-shell">
+      <div class="cisco-top">
+        <label>Survey Session
+          <select id="surveySelect" onchange="loadSelectedSurvey()" style="min-width:190px"><option value="">-- Select Synced Survey --</option></select>
+        </label>
+        <div style="display:flex;gap:4px;align-self:flex-end">
+          <button id="btn2D" class="mode-btn active" onclick="setViewMode('2d')">2D Cisco Prime</button>
+          <button id="btn3D" class="mode-btn" onclick="setViewMode('3d')">3D DNA Analyzer</button>
+        </div>
+        <label>Protocol / Band
+          <select id="hmBand" onchange="rebuildSidebarAndRender()">
+            <option value="ALL">All Bands</option>
+            <option value="5GHz">5 GHz</option>
+            <option value="2.4GHz">2.4 GHz</option>
+            <option value="6GHz">6 GHz</option>
+          </select>
+        </label>
+        <label>RSSI Cutoff
+          <select id="hmCutoff" onchange="renderSurvey()">
+            <option value="-75">-75 dBm</option>
+            <option value="-80">-80 dBm</option>
+            <option value="-85" selected>-85 dBm</option>
+            <option value="-95">None (-95 dBm)</option>
+          </select>
+        </label>
+        <div id="thermalLegendBox" class="thermal-legend" style="margin-left:4px">
+          <span>-35 dBm</span><div class="thermal-bar"></div><span>-90 dBm</span>
+        </div>
+        <label style="flex-direction:row;align-items:center;gap:5px;align-self:center;margin-left:auto">
+          <input id="chkGrid" type="checkbox" checked onchange="renderSurvey()"> Show grid
+        </label>
+        <button onclick="refreshSurveyList()" style="align-self:flex-end">Refresh</button>
+        <button onclick="deleteSelectedSurvey()" style="align-self:flex-end;background:#fef2f2;color:#b91c1c;border-color:#fca5a5;font-weight:600">Delete Map</button>
+        <button class="primary" onclick="exportPng()" style="align-self:flex-end">Export PNG</button>
+      </div>
+
+      <div class="cisco-body">
+        <aside class="ap-sidebar">
+          <h4>Contributing APs</h4>
+          <div style="display:flex;gap:5px">
+            <button onclick="selectAllAPs(true)" style="flex:1;padding:3px;font-size:11px;cursor:pointer">All</button>
+            <button onclick="selectAllAPs(false)" style="flex:1;padding:3px;font-size:11px;cursor:pointer">None</button>
+          </div>
+          <div id="apCheckList" class="ap-list"></div>
+          <div style="font-size:10px;color:#64748b;border-top:1px solid #cbd5e1;padding-top:6px" id="surveyStats">
+            Sync a survey from iPad to inspect 2D/3D maps.
+          </div>
+        </aside>
+
+        <div class="canvas-stage">
+          <canvas id="hmCanvas" width="1260" height="650"></canvas>
+          <div id="dnaOverlay" class="dna-overlay hidden">
+            <div class="dna-legend">
+              <span>dBm</span>
+              <div class="dna-bar-wrap">
+                <span class="dna-tick" style="left:52%">-65</span>
+                <span class="dna-tick" style="left:75%">-75</span>
+                <div class="dna-bar"><div class="g"></div><div class="o"></div><div class="r"></div></div>
+              </div>
+              <span>dBm</span>
+            </div>
+            <div class="dna-pad">
+              <button title="Top View" onclick="pitch3D=1.42;draw3DDNA()">⬆</button>
+              <button title="Tilt Up" onclick="pitch3D=Math.min(1.45,pitch3D+0.15);draw3DDNA()">▲</button>
+              <button title="Zoom In" onclick="zoom3D=Math.min(3.0,zoom3D*1.15);draw3DDNA()">+</button>
+              <button title="Rotate Left" onclick="yaw3D-=0.25;draw3DDNA()">◀</button>
+              <button title="Reset Iso" onclick="yaw3D=0.68;pitch3D=0.56;zoom3D=1.0;draw3DDNA()">⌂</button>
+              <button title="Rotate Right" onclick="yaw3D+=0.25;draw3DDNA()">▶</button>
+              <button title="Iso View" onclick="yaw3D=0.68;pitch3D=0.56;draw3DDNA()">⬡</button>
+              <button title="Tilt Down" onclick="pitch3D=Math.max(0.18,pitch3D-0.15);draw3DDNA()">▼</button>
+              <button title="Zoom Out" onclick="zoom3D=Math.max(0.45,zoom3D*0.87);draw3DDNA()">−</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- CISCO 360° RIGHT-SIDE SLIDE-OVER AP INSPECTOR DRAWER -->
+<div id="apModal" class="drawer-backdrop hidden" onclick="if(event.target===this) closeAPModal()">
+  <aside class="drawer">
+    <div class="drawer-hdr">
+      <div>
+        <h3 id="mTitle">AP 360° Assurance</h3>
+        <div id="mSub" class="sub"></div>
+      </div>
+      <button class="drawer-close" onclick="closeAPModal()">✕ Close</button>
+    </div>
+    <div id="mBody" class="drawer-body"></div>
+  </aside>
+</div>
+
+<!-- 5-SECOND HOVER-DWELL FLOATING EXPLANATION TOOLTIP -->
+<div id="hoverTipBox" class="hover-tip hidden">
+  <div class="hover-tip-hdr">
+    <span id="hoverTipTitle" class="hover-tip-title">รายละเอียด</span>
+    <button class="hover-tip-close" onclick="hideHoverTip(true)" title="Close">✕</button>
+  </div>
+  <div id="hoverTipBody"></div>
+</div>
+
+<script>
+let lastScan = null;
+let inspectedBSSID = null;
+let currentSurvey = null;
+let fpImgObj = null;
+let viewMode = '2d';
+let selectedBSSIDs = new Set();
+let surveyAPCatalog = [];
+let yaw3D = 0.68, pitch3D = 0.56, zoom3D = 1.0;
+let dragging = false, lastMx = 0, lastMy = 0;
+
+const HOVER_DELAY_MS = 5000;
+let hoverDwellTimer = null;
+let hoverHideTimer = null;
+let activeArmedEl = null;
+
+const METRIC_HELP = {
+  aps: {
+    t: 'Detected Radios (BSSID)',
+    b: 'จำนวนวิทยุ (BSSID) ทั้งหมดที่สแกนพบจาก Beacon / Probe Response ผ่านการ์ด <code>wlan0</code> ในรอบ 15 วินาทีล่าสุด<br><br>AP กายภาพ 1 ตัวที่ปล่อยหลาย SSID จะถูกนับแยกตาม BSSID — คลิกแถวใดก็ได้เพื่อเปิดหน้าต่าง 360° ดูกลุ่ม Physical AP เดียวกัน'
+  },
+  bands: {
+    t: 'Frequency Band & Channel',
+    b: 'แยกตามความถี่ของ Beacon บน <code>wlan0</code> (ปลดล็อก Regdomain <code>TH</code> สแกน 5 GHz ช่อง 36–165 ได้ครบ)<br><br>2.4 GHz ควรใช้เฉพาะช่อง <strong>1, 6, 11</strong> ส่วน 5 GHz แนะนำความกว้าง 20/40 MHz ในพื้นที่หนาแน่น'
+  },
+  rssi: {
+    t: 'RSSI — Signal Strength (dBm)',
+    b: 'ความแรงสัญญาณที่รับได้จาก Beacon ของ AP (ยิ่งใกล้ 0 ยิ่งแรง):<ul><li><strong>-35 ถึง -65 dBm:</strong> ดีเยี่ยม (Cisco Voice / Video Grade)</li><li><strong>-67 dBm:</strong> เกณฑ์มาตรฐาน Cisco Edge Target</li><li><strong>ต่ำกว่า -75 dBm:</strong> สัญญาณอ่อน เสี่ยงความเร็วตกหรือหลุด</li></ul>'
+  },
+  qbss: {
+    t: 'Active Clients (AP QBSS) — มาจากไหน?',
+    b: '<strong>อ่านตรงจาก Beacon ของตัว AP</strong> ในฟิลด์ <code>IEEE 802.11e BSS Load (IE 0x0B → station count)</code> ที่ AP องค์กร (Cisco / Huawei / Ubiquiti / Aruba) นับจำนวนเครื่องลูกที่เกาะอยู่จริงแล้วประกาศออกมาเอง<ul><li>ทำงานได้ตลอดผ่าน <code>wlan0</code> ครบทั้ง 2.4 &amp; 5 GHz</li><li>ได้จำนวนเครื่องลูกที่แม่นยำ แต่ตัว AP จะไม่ส่ง MAC เครื่องลูกมาใน Beacon</li></ul>'
+  },
+  qbss_util: {
+    t: 'QBSS Channel Utilization (%)',
+    b: 'อ่านจาก <code>802.11e BSS Load → channel utilisation (0–255)</code> ที่ตัว AP วัดความหนาแน่นของ Airtime บนช่องสัญญาณจริง:<ul><li><strong>&lt; 30%:</strong> ช่องสัญญาณโล่ง</li><li><strong>30–50%:</strong> ปานกลาง</li><li><strong>&gt; 60%:</strong> หนาแน่นสูง เสี่ยงเกิด Latency</li></ul>'
+  },
+  mon_clients: {
+    t: 'Sniffed Clients (Monitor Mode) — มาจากไหน?',
+    b: '<strong>ดักจับแพ็กเก็ตกลางอากาศผ่านการ์ด USB Monitor Mode</strong> (<code>wlan1</code>) ในช่วง 30 วินาทีล่าสุด:<ul><li><strong>Associated (Data):</strong> อ่านเฟรม <code>802.11 Data</code> ดูบิต <code>ToDS/FromDS</code> เพื่อแยก MAC เครื่องลูกและ BSSID ของ AP</li><li><strong>Probing:</strong> อ่านเฟรม <code>Probe Request</code> จากอุปกรณ์ที่กำลังสแกนหา Wi-Fi</li><li>นำ MAC 3 ไบต์แรกไปเทียบฐานข้อมูล OUI <strong>35,169 ยี่ห้อ</strong> เพื่อระบุผู้ผลิต</li></ul>'
+  },
+  mon_retry: {
+    t: 'Air Retry Rate (%)',
+    b: 'สัดส่วนเฟรมที่ถูกส่งซ้ำ อ่านจากบิต <code>Frame Control → Retry = 1</code> ในรอบ 10 วินาที:<ul><li><strong>&lt; 10%:</strong> ปกติ</li><li><strong>10–20%:</strong> เริ่มมีคลื่นกวน</li><li><strong>&gt; 20%:</strong> มีการชนของคลื่นหรือสัญญาณรบกวนสูง</li></ul>'
+  },
+  vendor_model: {
+    t: 'Vendor / Hardware Profile — มาจากไหน?',
+    b: '<ul><li><strong>Vendor:</strong> เทียบ MAC 3 ไบต์แรกกับฐานข้อมูล OUI 35,169 ยี่ห้อ + จับคู่ Virtual BSSID บนวิทยุเดียวกัน</li><li><strong>AP Model / Name:</strong> อ่านจาก <code>WPS IE</code> และ <code>Cisco Aironet IE (0x85)</code></li><li><strong>Streams (2x2 / 4x4):</strong> คำนวณจาก <code>HT / VHT / HE MCS Set</code></li></ul>'
+  },
+  bssid: {
+    t: 'BSSID (Radio MAC Address)',
+    b: 'MAC Address ของวิทยุแต่ละ SSID บนตัว AP (1 AP กายภาพอาจสร้างหลาย Virtual BSSID สำหรับแต่ละ SSID)'
+  },
+  max_phy: {
+    t: 'Max PHY Rate (Mbps)',
+    b: 'ความเร็วลิงก์สูงสุดทางทฤษฎี คำนวณจาก <strong>Wi-Fi Generation × Channel Width × Spatial Streams (NSS)</strong> จาก Capabilities IE ใน Beacon'
+  },
+  roam_pmf: {
+    t: 'Security, 802.11k/v/r & PMF (11w)',
+    b: '<ul><li><code>11k</code> (Neighbor Report): ช่วยเครื่องลูกค้นหา AP ถัดไปได้ไวขึ้น</li><li><code>11v</code> (BSS Transition): แนะนำให้เครื่องลูกย้ายไปเกาะ AP ที่ดีกว่า</li><li><code>11r</code> (Fast Transition): โรมมิ่งไวโดยไม่ต้องทำ 802.1X ใหม่เต็มรูปแบบ</li><li><code>PMF (11w)</code>: ป้องกันการยิง Deauth ปลอมตัดเน็ต</li></ul>'
+  },
+  audit: {
+    t: 'Cisco Assurance RF Health',
+    b: 'ตรวจสอบจุดอ่อนของการตั้งค่า RF อัตโนมัติจาก Beacon:<ul><li>เปิด Legacy Basic Rates (1/2/5.5/11 Mbps) บน 2.4 GHz</li><li>ตั้งช่อง 2.4 GHz นอก 1/6/11 (ACI)</li><li>มี AP ชนช่องสัญญาณเดียวกันหนาแน่น (CCI ≥ 4 ตัว)</li><li>ใช้ Security แบบ Open / WEP</li></ul>'
+  },
+  client_vendor: {
+    t: 'Endpoint Vendor (OUI) & Random MAC',
+    b: 'นำ MAC 3 ไบต์แรกของเครื่องลูกไปเทียบฐานข้อมูล OUI 35,169 ยี่ห้อ<br><br>หากบิต LAA (<code>0x02</code>) ของไบต์แรกถูกตั้งค่า จะระบุว่าเป็น <strong>Private / Random MAC</strong> ที่ iOS/Android สุ่มขึ้นเพื่อความเป็นส่วนตัว'
+  },
+  client_state: {
+    t: 'Association State',
+    b: '<ul><li><strong>Associated (Data):</strong> ตรวจพบเฟรม Data รับ-ส่งกับ AP จริง</li><li><strong>Probing:</strong> ตรวจพบเฟรม Probe Request ขณะค้นหาสัญญาณ</li></ul>'
+  },
+  ap_name: {
+    t: 'AP Hostname',
+    b: 'ชื่อตัว AP ที่อ่านได้จาก <code>Cisco Aironet IE (0x85)</code> หรือ <code>WPS Device Name</code>'
+  },
+  phys_ap: {
+    t: 'Physical AP Grouping (Co-BSSID)',
+    b: 'รวม SSID ทั้งหมดที่กระจายออกจากวิทยุ AP กายภาพตัวเดียวกัน (เทียบ MAC 4 ไบต์กลางบนคลื่นความถี่เดียวกัน)'
+  },
+  tx_power: {
+    t: 'TX Power & Country Code',
+    b: 'อ่านค่ากำลังส่งจาก <code>TPC Report IE</code> (dBm) และรหัสประเทศจาก <code>Country IE</code>'
+  },
+  bss_color: {
+    t: 'HE BSS Color (Wi-Fi 6 / 7)',
+    b: 'รหัสสีของเซลล์คลื่น (1–63) จาก <code>HE Operation IE</code> ช่วยลดการรบกวนระหว่าง AP ช่องเดียวกันในมาตรฐาน Wi-Fi 6/7'
+  },
+  basic_rates: {
+    t: 'Basic Rates, Beacon Interval & DTIM',
+    b: 'อ่านอัตราเร็วบังคับขั้นต่ำ (<code>*</code> ใน Supported Rates IE) และคาบการส่ง Beacon / DTIM'
+  }
+};
+
+function positionHoverTip(anchorEl) {
+  const tip = document.getElementById('hoverTipBox');
+  const rect = anchorEl.getBoundingClientRect();
+  const tw = tip.offsetWidth || 360;
+  const th = tip.offsetHeight || 150;
+  let left = rect.left + Math.min(16, rect.width * 0.1);
+  if (left + tw > window.innerWidth - 14) left = window.innerWidth - tw - 14;
+  if (left < 14) left = 14;
+  let top = rect.bottom + 8;
+  if (top + th > window.innerHeight - 14) top = rect.top - th - 8;
+  if (top < 14) top = 14;
+  tip.style.left = `${Math.round(left)}px`;
+  tip.style.top = `${Math.round(top)}px`;
+}
+
+function showHoverTip(anchorEl, key) {
+  const entry = METRIC_HELP[key];
+  if (!entry || !anchorEl) return;
+  clearTimeout(hoverHideTimer);
+  const tip = document.getElementById('hoverTipBox');
+  document.getElementById('hoverTipTitle').textContent = entry.t;
+  document.getElementById('hoverTipBody').innerHTML = entry.b;
+  tip.classList.remove('hidden');
+  positionHoverTip(anchorEl);
+  requestAnimationFrame(() => tip.classList.add('visible'));
+}
+
+function hideHoverTip(immediate = false) {
+  clearTimeout(hoverHideTimer);
+  const tip = document.getElementById('hoverTipBox');
+  const doHide = () => {
+    tip.classList.remove('visible');
+    setTimeout(() => { if (!tip.classList.contains('visible')) tip.classList.add('hidden'); }, 160);
+  };
+  if (immediate) doHide();
+  else hoverHideTimer = setTimeout(doHide, 260);
+}
+
+function cancelHoverArming() {
+  clearTimeout(hoverDwellTimer);
+  hoverDwellTimer = null;
+  if (activeArmedEl) {
+    activeArmedEl.classList.remove('hover-arming');
+    activeArmedEl = null;
+  }
+}
+
+document.addEventListener('pointerover', e => {
+  const tip = document.getElementById('hoverTipBox');
+  if (tip && tip.contains(e.target)) { clearTimeout(hoverHideTimer); return; }
+  const target = e.target.closest('[data-help]');
+  if (!target) return;
+  if (activeArmedEl === target) return;
+  cancelHoverArming();
+  activeArmedEl = target;
+  target.classList.add('hover-arming');
+  const key = target.dataset.help;
+  hoverDwellTimer = setTimeout(() => {
+    if (activeArmedEl === target) {
+      target.classList.remove('hover-arming');
+      showHoverTip(target, key);
+    }
+  }, HOVER_DELAY_MS);
+});
+
+document.addEventListener('pointerout', e => {
+  const tip = document.getElementById('hoverTipBox');
+  if (tip && tip.contains(e.target)) {
+    if (!e.relatedTarget || !tip.contains(e.relatedTarget)) hideHoverTip(false);
+    return;
+  }
+  const target = e.target.closest('[data-help]');
+  if (!target) return;
+  if (e.relatedTarget && target.contains(e.relatedTarget)) return;
+  if (activeArmedEl === target) cancelHoverArming();
+  if (!e.relatedTarget || !tip.contains(e.relatedTarget)) hideHoverTip(false);
+});
+
+const PRIME_STOPS = [
+  { dbm: -35, rgb: [127, 0, 0] }, { dbm: -42, rgb: [224, 36, 36] },
+  { dbm: -50, rgb: [249, 115, 22] }, { dbm: -57, rgb: [250, 204, 21] },
+  { dbm: -64, rgb: [22, 212, 78] }, { dbm: -72, rgb: [6, 194, 232] },
+  { dbm: -81, rgb: [29, 78, 216] }, { dbm: -90, rgb: [30, 10, 92] }
+];
+function primeThermalRGB(dbm) {
+  if (dbm >= PRIME_STOPS[0].dbm) return PRIME_STOPS[0].rgb;
+  const last = PRIME_STOPS[PRIME_STOPS.length - 1];
+  if (dbm <= last.dbm) return last.rgb;
+  for (let i = 0; i < PRIME_STOPS.length - 1; i++) {
+    const a = PRIME_STOPS[i], b = PRIME_STOPS[i + 1];
+    if (dbm <= a.dbm && dbm >= b.dbm) {
+      const t = (a.dbm - dbm) / (a.dbm - b.dbm);
+      return [Math.round(a.rgb[0]+(b.rgb[0]-a.rgb[0])*t), Math.round(a.rgb[1]+(b.rgb[1]-a.rgb[1])*t), Math.round(a.rgb[2]+(b.rgb[2]-a.rgb[2])*t)];
+    }
+  }
+  return last.rgb;
+}
+function rssiBarColor(dbm) { return dbm >= -65 ? '#16a34a' : (dbm >= -75 ? '#049fd9' : '#d97706'); }
+function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function switchTab(name) {
+  const names = ['live', 'clients', 'surveys'];
+  document.querySelectorAll('.tab').forEach((b, i) => b.classList.toggle('active', names[i] === name));
+  names.forEach(n => document.getElementById('tab-' + n).classList.toggle('hidden', n !== name));
+  if (name === 'surveys') refreshSurveyList();
+  if (name === 'clients') renderClientsTab();
+}
+
+function setViewMode(m) {
+  viewMode = m;
+  document.getElementById('btn2D').classList.toggle('active', m === '2d');
+  document.getElementById('btn3D').classList.toggle('active', m === '3d');
+  document.getElementById('dnaOverlay').classList.toggle('hidden', m !== '3d');
+  document.getElementById('thermalLegendBox').classList.toggle('hidden', m !== '2d');
+  renderSurvey();
+}
+
+function renderMonitor(mon) {
+  const badge = document.getElementById('monBadge');
+  const panel = document.getElementById('monPanel');
+  if (!mon || !mon.active) {
+    badge.textContent = 'Monitor: Standby (wlan0 Scan)';
+    badge.classList.remove('mon-on');
+    panel.classList.add('hidden');
+    document.getElementById('cMonRetry').textContent = '-';
+    document.getElementById('cMonClients').textContent = '0';
+    return;
+  }
+  badge.textContent = `Monitor: ${mon.interface} (Ch ${mon.current_channel})`;
+  badge.classList.add('mon-on');
+  panel.classList.remove('hidden');
+  document.getElementById('cMonFrames').textContent = `${mon.total_frames_10s} (${mon.fps}/s)`;
+  document.getElementById('cMonRetry').textContent = `${mon.retry_pct_10s}%`;
+  document.getElementById('cMonClients').textContent = (mon.clients || []).length;
+  document.getElementById('monSub').textContent = `${mon.interface} • Channels ${(mon.channels||[]).join(', ')}`;
+
+  const chMap = mon.per_channel || {};
+  const chs = (mon.channels && mon.channels.length) ? [...mon.channels].sort((a,b)=>a-b) : Object.keys(chMap).map(Number).sort((a,b)=>a-b);
+  let maxF = 1;
+  chs.forEach(c => { const d = chMap[String(c)]; if (d && d.frames > maxF) maxF = d.frames; });
+  document.getElementById('chBars').innerHTML = chs.map(c => {
+    const d = chMap[String(c)] || {frames: 0, retries: 0, retry_pct: 0};
+    const hTotal = Math.round((d.frames / maxF) * 100);
+    const hRetry = d.frames ? Math.round((d.retries / maxF) * 100) : 0;
+    return `<div class="ch-col" title="Ch ${c}: ${d.frames}f, ${d.retry_pct}% retry"><div class="ch-bar-bg"><div class="ch-bar-fill" style="height:${Math.max(0,hTotal-hRetry)}%"></div><div class="ch-bar-retry" style="height:${hRetry}%"></div></div><div class="ch-lbl">${c}</div></div>`;
+  }).join('');
+}
+
+function renderLive() {
+  if (!lastScan) return;
+  const q = document.getElementById('qSearch').value.trim().toLowerCase();
+  const band = document.getElementById('qBand').value;
+  document.getElementById('cTotal').textContent = lastScan.ap_count;
+  document.getElementById('cBands').textContent = `${lastScan.band_counts['2.4GHz']||0} / ${lastScan.band_counts['5GHz']||0}`;
+  document.getElementById('cBest').textContent = lastScan.strongest_rssi != null ? `${lastScan.strongest_rssi} dBm` : '-';
+  document.getElementById('cQbssClients').textContent = lastScan.qbss_total_clients ?? 0;
+  document.getElementById('scanTick').textContent = `Scan #${lastScan.scan_id} • ${(lastScan.scan_duration_ms/1000).toFixed(1)}s • ${lastScan.interface}`;
+  renderMonitor(lastScan.monitor);
+
+  const rows = (lastScan.aps || []).filter(ap => {
+    if (band !== 'ALL' && ap.band !== band) return false;
+    if (q) {
+      const hay = `${ap.ssid||''} ${ap.bssid} ${ap.vendor||''} ${ap.ap_model||''} ${ap.ap_name||''}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const tbody = document.getElementById('apRows');
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="9" style="color:var(--muted)">No radios match the current filter.</td></tr>'; return; }
+  tbody.innerHTML = rows.map(ap => {
+    const pct = Math.max(6, Math.min(100, Math.round((ap.rssi_dbm + 95) / 60 * 100)));
+    const bDot = ap.band === '2.4GHz' ? 'bd-24' : (ap.band === '5GHz' ? 'bd-5' : 'bd-6');
+    const barCol = rssiBarColor(ap.rssi_dbm);
+    const qbss = ap.qbss_util_pct != null ? `<strong>${ap.qbss_stations??0}</strong> <span style="color:var(--muted)">(${ap.qbss_util_pct}%)</span>` : '<span style="color:var(--muted)">-</span>';
+    const model = ap.ap_model || ap.wifi_gen;
+    const nameSub = ap.ap_name ? `<span style="color:var(--cisco-blue-dark);margin-left:6px;font-weight:600">${escapeHtml(ap.ap_name)}</span>` : '';
+    const roamFlags = [ap.dot11k?'11k':'', ap.dot11v?'11v':'', ap.dot11r?'11r':''].filter(Boolean).join('/');
+    const secStr = `${escapeHtml(ap.security)}${roamFlags ? ` <span style="color:var(--muted)">• ${roamFlags}</span>` : ''}`;
+    const warns = (ap.health_warnings || []).length;
+    const auditHtml = warns > 0
+      ? `<span class="status-dot st-warn">${warns} Advisory</span>`
+      : `<span class="status-dot st-ok">Healthy</span>`;
+    const selCls = inspectedBSSID === ap.bssid ? 'selected-row' : '';
+    return `<tr class="clickable ${selCls}" onclick="openAPModal('${ap.bssid}')">
+      <td><strong style="color:var(--cisco-navy)">${escapeHtml(ap.ssid || '<Hidden SSID>')}</strong></td>
+      <td>${escapeHtml(model)}${nameSub}</td>
+      <td class="mono">${ap.bssid}</td>
+      <td class="mono"><span class="rssi-cell"><strong>${ap.rssi_dbm} dBm</strong><span class="bar-wrap"><span class="bar" style="width:${pct}%;background:${barCol}"></span></span></span></td>
+      <td><span class="band-tag"><span class="band-dot ${bDot}"></span>${ap.band}</span> <span class="mono" style="color:var(--muted)">• Ch ${ap.channel} (${ap.width_mhz}M)</span></td>
+      <td class="mono">${ap.max_phy_mbps ? ap.max_phy_mbps + ' Mbps' : '-'}</td>
+      <td>${secStr}</td>
+      <td class="mono">${qbss}</td>
+      <td>${auditHtml}</td>
+    </tr>`;
+  }).join('');
+
+  const apModalEl = document.getElementById('apModal');
+  if (inspectedBSSID && !(activeArmedEl && apModalEl.contains(activeArmedEl))) renderAPModal(inspectedBSSID);
+  if (!document.getElementById('tab-clients').classList.contains('hidden')) renderClientsTab();
+}
+
+function renderClientsTab() {
+  if (!lastScan) return;
+  const qbssAps = (lastScan.aps || []).filter(a => a.qbss_stations != null).sort((a,b) => (b.qbss_stations||0) - (a.qbss_stations||0));
+  const qt = document.getElementById('qbssRows');
+  qt.innerHTML = qbssAps.length ? qbssAps.map(ap => `<tr class="clickable" onclick="openAPModal('${ap.bssid}')">
+    <td><strong style="color:var(--cisco-navy)">${escapeHtml(ap.ssid || '<Hidden SSID>')}</strong></td>
+    <td>${escapeHtml(ap.ap_model || ap.vendor)}</td>
+    <td class="mono">${ap.bssid}</td>
+    <td class="mono">${ap.band} • Ch ${ap.channel}</td>
+    <td class="mono"><strong style="color:var(--cisco-navy)">${ap.qbss_stations}</strong> clients</td>
+    <td class="mono">${ap.qbss_util_pct != null ? ap.qbss_util_pct + '%' : '-'}</td>
+  </tr>`).join('') : '<tr><td colspan="6" style="color:var(--muted)">No radios broadcasting QBSS BSS Load</td></tr>';
+
+  const mon = lastScan.monitor || {};
+  const clients = mon.clients || [];
+  document.getElementById('monClientStatus').textContent = mon.active
+    ? `Capturing on ${mon.interface} (Ch ${mon.current_channel}) • ${clients.length} endpoints`
+    : 'Monitor Adapter Standby';
+
+  const ct = document.getElementById('clientRows');
+  ct.innerHTML = clients.length ? clients.map(c => {
+    const vBadge = c.is_random_mac
+      ? `<span class="subtle-pill" style="color:#92400e;background:#fffbeb;border-color:#fde68a">${escapeHtml(c.vendor)}</span>`
+      : `<span class="subtle-pill">${escapeHtml(c.vendor)}</span>`;
+    const tBadge = c.type.includes('Data')
+      ? `<span class="status-dot st-ok">Associated</span>`
+      : `<span style="color:var(--muted)">Probing</span>`;
+    const apStr = c.bssid ? `<strong style="color:var(--cisco-navy)">${escapeHtml(c.ap_ssid || '<Unknown>')}</strong> <span class="mono" style="color:var(--muted)">(${c.bssid})</span>` : '<span style="color:var(--muted)">Probe Scan</span>';
+    return `<tr>
+      <td class="mono">${c.mac}</td>
+      <td>${vBadge}</td>
+      <td>${tBadge}</td>
+      <td>${apStr}</td>
+      <td class="mono">${c.rssi_dbm!=null?c.rssi_dbm+' dBm':'-'}</td>
+      <td class="mono">Ch ${c.channel}</td>
+      <td class="mono">${c.frames}f / ${c.retry_pct}%</td>
+      <td class="mono">${c.age_sec}s</td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="8" style="color:var(--muted)">${mon.active ? 'Listening for 802.11 client frames...' : 'Connect a monitor-mode USB adapter to inspect per-client MAC addresses and OUI vendors.'}</td></tr>`;
+}
+
+function openAPModal(bssid) {
+  inspectedBSSID = bssid;
+  document.getElementById('apModal').classList.remove('hidden');
+  renderAPModal(bssid);
+}
+function closeAPModal() {
+  inspectedBSSID = null;
+  cancelHoverArming();
+  hideHoverTip(true);
+  document.getElementById('apModal').classList.add('hidden');
+}
+
+function renderAPModal(bssid) {
+  if (!lastScan) return;
+  const ap = (lastScan.aps || []).find(a => a.bssid === bssid);
+  if (!ap) return;
+  document.getElementById('mTitle').textContent = ap.ssid || '<Hidden SSID>';
+  document.getElementById('mSub').textContent = `${ap.bssid} • ${ap.band} Ch ${ap.channel} (${ap.width_mhz} MHz)`;
+
+  const yn = v => v ? '<span style="color:var(--good)">Enabled</span>' : '<span style="color:var(--muted)">Disabled</span>';
+  const warnsHtml = (ap.health_warnings || []).length
+    ? ap.health_warnings.map(w => `<div class="warn-item">${escapeHtml(w)}</div>`).join('')
+    : '<div class="ok-item">No RF configuration advisories detected on this radio.</div>';
+
+  const clientList = ap.mon_client_list || [];
+  const clientRowsHtml = clientList.length
+    ? `<table style="margin-top:8px;border:1px solid var(--border-light)"><thead><tr><th>Client MAC</th><th data-help="client_vendor">Vendor</th><th data-help="rssi">RSSI</th><th data-help="mon_retry">Frames</th></tr></thead><tbody>` +
+      clientList.map(c => `<tr><td class="mono">${c.mac}</td><td>${escapeHtml(c.vendor)}</td><td class="mono">${c.rssi_dbm??'-'} dBm</td><td class="mono">${c.frames}f (${c.retry_pct}%)</td></tr>`).join('') +
+      `</tbody></table>`
+    : '';
+
+  document.getElementById('mBody').innerHTML = `
+    <div>
+      <div class="sec-title">Radio &amp; Hardware Identity</div>
+      <div class="kv-table">
+        <div class="kv-row" data-help="vendor_model"><span class="kv-k">Vendor / Radio Profile</span><span class="kv-v">${escapeHtml(ap.ap_model || ap.vendor)}</span></div>
+        <div class="kv-row" data-help="ap_name"><span class="kv-k">Broadcast AP Name</span><span class="kv-v">${escapeHtml(ap.ap_name || '-')}</span></div>
+        <div class="kv-row" data-help="rssi"><span class="kv-k">Signal Strength (RSSI)</span><span class="kv-v">${ap.rssi_dbm} dBm (${ap.freq_mhz} MHz)</span></div>
+        <div class="kv-row" data-help="max_phy"><span class="kv-k">Wi-Fi Gen / Spatial Streams</span><span class="kv-v">${ap.wifi_gen} (${ap.streams || '1x1'}) • Max ${ap.max_phy_mbps || '-'} Mbps</span></div>
+        <div class="kv-row" data-help="phys_ap"><span class="kv-k">Co-Hosted SSIDs (${ap.co_bssid_count || 1})</span><span class="kv-v">${escapeHtml((ap.sibling_ssids||[]).join(', '))}</span></div>
+        <div class="kv-row" data-help="tx_power"><span class="kv-k">TX Power / Regulatory Domain</span><span class="kv-v">${ap.tx_power_dbm!=null?ap.tx_power_dbm+' dBm':'-'} / ${ap.country||'-'}</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-title">Security, Fast Roaming &amp; Airtime</div>
+      <div class="kv-table">
+        <div class="kv-row" data-help="roam_pmf"><span class="kv-k">Security / PMF (802.11w)</span><span class="kv-v">${escapeHtml(ap.security)} • PMF ${ap.pmf||'Disabled'}</span></div>
+        <div class="kv-row" data-help="roam_pmf"><span class="kv-k">802.11k (Neighbor Report)</span><span class="kv-v">${yn(ap.dot11k)}</span></div>
+        <div class="kv-row" data-help="roam_pmf"><span class="kv-k">802.11v (BSS Transition)</span><span class="kv-v">${yn(ap.dot11v)}</span></div>
+        <div class="kv-row" data-help="roam_pmf"><span class="kv-k">802.11r (Fast Roaming FT)</span><span class="kv-v">${yn(ap.dot11r)}</span></div>
+        <div class="kv-row" data-help="bss_color"><span class="kv-k">HE BSS Color</span><span class="kv-v">${ap.bss_color!=null?ap.bss_color:'-'}</span></div>
+        <div class="kv-row" data-help="basic_rates"><span class="kv-k">Basic Rates / DTIM</span><span class="kv-v">${(ap.basic_rates_mbps||[]).join(', ')||'-'} Mbps • DTIM ${ap.dtim_period??'-'}</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-title" data-help="audit">Assurance Advisories (Co-Channel APs: ${ap.cci_count||0})</div>
+      ${warnsHtml}
+    </div>
+
+    <div>
+      <div class="sec-title">Client Telemetry</div>
+      <div class="kv-table">
+        <div class="kv-row" data-help="qbss"><span class="kv-k">AP-Reported Clients (QBSS)</span><span class="kv-v">${ap.qbss_stations!=null?ap.qbss_stations + ' clients':'Not broadcast'}</span></div>
+        <div class="kv-row" data-help="qbss_util"><span class="kv-k">AP Channel Utilization</span><span class="kv-v">${ap.qbss_util_pct!=null?ap.qbss_util_pct+'%':'-'}</span></div>
+        <div class="kv-row" data-help="mon_clients"><span class="kv-k">Monitor Sniffed Endpoints</span><span class="kv-v">${ap.mon_clients||0} MACs (${ap.mon_frames||0} frames)</span></div>
+      </div>
+      ${clientRowsHtml}
+    </div>
+  `;
+}
+
+function connectSSE() {
+  fetch('/api/health').then(r => r.json()).then(h => {
+    document.getElementById('metaInfo').textContent = `${h.hostname} • ${h.interface}`;
+  }).catch(() => {});
+  const es = new EventSource('/api/stream');
+  es.addEventListener('scan', ev => { document.getElementById('statusDot').classList.remove('err'); lastScan = JSON.parse(ev.data); renderLive(); });
+  es.onerror = () => document.getElementById('statusDot').classList.add('err');
+}
+
+// ==================== CISCO PRIME 2D & DNA 3D MAP ENGINE ====================
+async function refreshSurveyList() {
+  const r = await fetch('/api/surveys');
+  const d = await r.json();
+  const sel = document.getElementById('surveySelect');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">-- Select Synced Survey --</option>' +
+    (d.surveys || []).map(s => `<option value="${s.id}">${escapeHtml(s.name)} (${s.point_count} pts)</option>`).join('');
+  if (prev && (d.surveys||[]).some(s=>s.id===prev)) sel.value = prev;
+  else if (d.surveys && d.surveys.length) { sel.value = d.surveys[0].id; loadSelectedSurvey(); }
+}
+
+async function loadSelectedSurvey() {
+  const id = document.getElementById('surveySelect').value;
+  if (!id) return;
+  const r = await fetch(`/api/surveys/${encodeURIComponent(id)}`);
+  currentSurvey = await r.json();
+  fpImgObj = null;
+  if (currentSurvey.floorplan_jpeg_b64) {
+    const img = new Image();
+    img.onload = () => { fpImgObj = img; renderSurvey(); };
+    img.src = 'data:image/jpeg;base64,' + currentSurvey.floorplan_jpeg_b64;
+  }
+  rebuildSidebarAndRender(true);
+}
+
+async function deleteSelectedSurvey() {
+  const sel = document.getElementById('surveySelect');
+  const id = sel.value;
+  if (!id) return;
+  if (!confirm(`Delete saved map "${sel.options[sel.selectedIndex].text}" from WLAN Pi?`)) return;
+  await fetch(`/api/surveys/${encodeURIComponent(id)}`, { method: 'DELETE' });
+  currentSurvey = null;
+  const canvas = document.getElementById('hmCanvas');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  document.getElementById('apCheckList').innerHTML = '';
+  document.getElementById('surveyStats').textContent = 'Map deleted.';
+  await refreshSurveyList();
+}
+
+function rebuildSidebarAndRender(resetSelection = false) {
+  if (!currentSurvey) return;
+  const band = document.getElementById('hmBand').value;
+  const best = {};
+  for (const pt of (currentSurvey.points || [])) {
+    for (const ap of (pt.aps || [])) {
+      if (band !== 'ALL' && ap.band !== band) continue;
+      const cur = best[ap.bssid];
+      if (!cur || ap.rssi_dbm > cur.rssi) {
+        best[ap.bssid] = { bssid: ap.bssid, ssid: ap.ssid || '<hidden>', vendor: ap.vendor || '', model: ap.ap_model || ap.wifi_gen || '', apName: ap.ap_name || '', band: ap.band, ch: ap.channel, rssi: ap.rssi_dbm, x: pt.x, z: pt.z };
+      }
+    }
+  }
+  surveyAPCatalog = Object.values(best).sort((a, b) => b.rssi - a.rssi);
+  if (resetSelection || selectedBSSIDs.size === 0) selectedBSSIDs = new Set(surveyAPCatalog.slice(0, 12).map(a => a.bssid));
+  document.getElementById('apCheckList').innerHTML = surveyAPCatalog.slice(0, 30).map(ap => {
+    const label = ap.apName || `${ap.vendor && ap.vendor !== 'Unknown' ? ap.vendor + ' ' : ''}${ap.ssid.slice(0,14)} (Ch${ap.ch})`;
+    return `<label class="ap-item"><input type="checkbox" ${selectedBSSIDs.has(ap.bssid)?'checked':''} onchange="toggleBSSID('${ap.bssid}', this.checked)"><div><strong>${escapeHtml(label)}</strong><small>${ap.rssi} dBm • ${ap.band} • ${ap.bssid.slice(-8)}</small></div></label>`;
+  }).join('');
+  renderSurvey();
+}
+
+function toggleBSSID(bssid, on) { if (on) selectedBSSIDs.add(bssid); else selectedBSSIDs.delete(bssid); renderSurvey(); }
+function selectAllAPs(all) { selectedBSSIDs = all ? new Set(surveyAPCatalog.map(a => a.bssid)) : new Set(); rebuildSidebarAndRender(false); }
+function cleanWalls(rawWalls) { return (rawWalls || []).filter(w => Math.hypot(w.x2 - w.x1, w.z2 - w.z1) >= 0.35); }
+function getFilteredSamples() {
+  const band = document.getElementById('hmBand').value;
+  return (currentSurvey.points || []).map(p => {
+    const aps = (p.aps || []).filter(a => (band === 'ALL' || a.band === band) && (selectedBSSIDs.size === 0 || selectedBSSIDs.has(a.bssid))).sort((a, b) => b.rssi_dbm - a.rssi_dbm);
+    return aps.length ? { x: p.x, y: p.y ?? 0, z: p.z, v: aps[0].rssi_dbm, bestAP: aps[0] } : null;
+  }).filter(Boolean);
+}
+function getActiveAPs() { return surveyAPCatalog.filter(a => selectedBSSIDs.has(a.bssid)).slice(0, 8); }
+function renderSurvey() { if (!currentSurvey) return; if (viewMode === '3d') draw3DDNA(); else draw2DCiscoPrime(); }
+
+function draw2DCiscoPrime() {
+  const canvas = document.getElementById('hmCanvas'), ctx = canvas.getContext('2d'), W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
+  const pts = currentSurvey.points || [], walls = cleanWalls(currentSurvey.walls), doors = currentSurvey.doors || [], windows = currentSurvey.windows || [], objects = currentSurvey.objects || [];
+  const samples = getFilteredSamples(), activeAPs = getActiveAPs(), cutoff = Number(document.getElementById('hmCutoff').value), showGrid = document.getElementById('chkGrid').checked;
+  if (!pts.length && !walls.length) return;
+
+  const rulerL = 36, rulerT = 24, mapX = rulerL, mapY = rulerT, mapW = W - rulerL - 10, mapH = H - rulerT - 10;
+  const cal = currentSurvey.calibration;
+  let toSx, toSz, toWorld, scale, ox, oz, minX, maxX, minZ, maxZ;
+
+  if (fpImgObj && cal && cal.isCalibrated) {
+    const asp = fpImgObj.width / fpImgObj.height;
+    let rw = mapW - 20, rh = rw / asp;
+    if (rh > mapH - 20) { rh = mapH - 20; rw = rh * asp; }
+    const rx = mapX + (mapW - rw) / 2, ry = mapY + (mapH - rh) / 2;
+    const c = Math.cos(cal.rotationRad), s = Math.sin(cal.rotationRad);
+    toSx = (wx, wz) => rx + ((cal.scalePxPerMeter * (c * wx - s * wz) + cal.offsetPxX) / cal.imgWidth) * rw;
+    toSz = (wx, wz) => ry + ((cal.scalePxPerMeter * (s * wx + c * wz) + cal.offsetPxY) / cal.imgHeight) * rh;
+    toWorld = (px, py) => { const ix = ((px - rx) / rw) * cal.imgWidth - cal.offsetPxX, iy = ((py - ry) / rh) * cal.imgHeight - cal.offsetPxY, inv = 1 / Math.max(0.001, cal.scalePxPerMeter); return [inv * (c * ix + s * iy), inv * (-s * ix + c * iy)]; };
+    ctx.drawImage(fpImgObj, rx, ry, rw, rh);
+    scale = (cal.scalePxPerMeter / cal.imgWidth) * rw; ox = rx; oz = ry; minX = 0; maxX = mapW / scale; minZ = 0; maxZ = mapH / scale;
+  } else {
+    const rot = ((currentSurvey.map_rotation_deg || 0) * Math.PI) / 180, cr = Math.cos(rot), sr = Math.sin(rot);
+    const rW = (x, z) => [x * cr - z * sr, x * sr + z * cr];
+    minX = Infinity; maxX = -Infinity; minZ = Infinity; maxZ = -Infinity;
+    const expand = (x, z) => { const [rx, rz] = rW(x, z); minX = Math.min(minX, rx); maxX = Math.max(maxX, rx); minZ = Math.min(minZ, rz); maxZ = Math.max(maxZ, rz); };
+    pts.forEach(p => expand(p.x, p.z)); walls.forEach(w => { expand(w.x1, w.z1); expand(w.x2, w.z2); });
+    const pad = 2.5; minX -= pad; maxX += pad; minZ -= pad; maxZ += pad;
+    const spanX = Math.max(6, maxX - minX), spanZ = Math.max(6, maxZ - minZ);
+    scale = Math.min((mapW - 40) / spanX, (mapH - 40) / spanZ);
+    ox = mapX + (mapW - spanX * scale) / 2 - minX * scale; oz = mapY + (mapH - spanZ * scale) / 2 - minZ * scale;
+    toSx = (x, z) => rW(x, z)[0] * scale + ox; toSz = (x, z) => rW(x, z)[1] * scale + oz;
+    toWorld = (px, py) => { const rx = (px - ox) / scale, rz = (py - oz) / scale; return [rx * cr + rz * sr, -rx * sr + rz * cr]; };
+  }
+
+  if (samples.length) {
+    const bw = 300, bh = Math.round(bw * mapH / mapW), off = document.createElement('canvas'); off.width = bw; off.height = bh;
+    const octx = off.getContext('2d'), imgData = octx.createImageData(bw, bh), data = imgData.data;
+    for (let py = 0; py < bh; py++) {
+      const sy = mapY + (py + 0.5) * mapH / bh;
+      for (let px = 0; px < bw; px++) {
+        const sx = mapX + (px + 0.5) * mapW / bw, [wx, wz] = toWorld(sx, sy);
+        let num = 0, den = 0, minD = Infinity;
+        for (const s of samples) { const d = Math.hypot(wx - s.x, wz - s.z); if (d < minD) minD = d; const w = 1 / (d * d + 0.18); num += w * s.v; den += w; }
+        const rssi = (num / den) - (minD > 1.0 ? 2.6 * (minD - 1.0) : 0);
+        if (rssi < cutoff) continue;
+        const [r, g, b] = primeThermalRGB(rssi), o = (py * bw + px) * 4;
+        data[o] = r; data[o+1] = g; data[o+2] = b; data[o+3] = Math.round(Math.min(1, (rssi - cutoff) / 4.0) * 175);
+      }
+    }
+    octx.putImageData(imgData, 0, 0);
+    ctx.save(); ctx.beginPath(); ctx.rect(mapX, mapY, mapW, mapH); ctx.clip(); ctx.imageSmoothingEnabled = true; ctx.drawImage(off, mapX, mapY, mapW, mapH); ctx.restore();
+  }
+
+  ctx.save(); ctx.beginPath(); ctx.rect(mapX, mapY, mapW, mapH); ctx.clip();
+  for (const obj of objects) {
+    if (!obj.corners || obj.corners.length < 4) continue;
+    ctx.beginPath(); obj.corners.forEach((c, i) => i ? ctx.lineTo(toSx(c.x, c.z), toSz(c.x, c.z)) : ctx.moveTo(toSx(c.x, c.z), toSz(c.x, c.z))); ctx.closePath();
+    ctx.strokeStyle = 'rgba(15,23,42,0.35)'; ctx.lineWidth = 1; ctx.stroke();
+  }
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#1e3a5f'; ctx.lineWidth = 2.6; ctx.beginPath(); walls.forEach(w => { ctx.moveTo(toSx(w.x1, w.z1), toSz(w.x1, w.z1)); ctx.lineTo(toSx(w.x2, w.z2), toSz(w.x2, w.z2)); }); ctx.stroke();
+  ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 3; ctx.beginPath(); windows.forEach(w => { ctx.moveTo(toSx(w.x1, w.z1), toSz(w.x1, w.z1)); ctx.lineTo(toSx(w.x2, w.z2), toSz(w.x2, w.z2)); }); ctx.stroke();
+  ctx.strokeStyle = '#059669'; ctx.lineWidth = 2.5; ctx.setLineDash([5, 4]); ctx.beginPath(); doors.forEach(d => { ctx.moveTo(toSx(d.x1, d.z1), toSz(d.x1, d.z1)); ctx.lineTo(toSx(d.x2, d.z2), toSz(d.x2, d.z2)); }); ctx.stroke(); ctx.setLineDash([]);
+
+  if (showGrid && scale > 8) {
+    const stepM = scale < 20 ? 5 : (scale < 45 ? 2 : 1);
+    ctx.strokeStyle = 'rgba(15,23,42,0.32)'; ctx.lineWidth = 0.8;
+    for (let gx = Math.ceil(minX/stepM)*stepM; gx <= maxX; gx += stepM) { const sx = gx*scale+ox; if (sx>=mapX && sx<=mapX+mapW) { ctx.beginPath(); ctx.moveTo(sx,mapY); ctx.lineTo(sx,mapY+mapH); ctx.stroke(); } }
+    for (let gz = Math.ceil(minZ/stepM)*stepM; gz <= maxZ; gz += stepM) { const sz = gz*scale+oz; if (sz>=mapY && sz<=mapY+mapH) { ctx.beginPath(); ctx.moveTo(mapX,sz); ctx.lineTo(mapX+mapW,sz); ctx.stroke(); } }
+  }
+
+  ctx.font = 'bold 11px Segoe UI, sans-serif'; ctx.textBaseline = 'middle';
+  activeAPs.forEach((ap, idx) => {
+    const sx = toSx(ap.x, ap.z), sz = toSz(ap.x, ap.z);
+    ctx.fillStyle = '#475569'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(sx, sz, 9, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(sx, sz, 5, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sx-11,sz); ctx.lineTo(sx+11,sz); ctx.moveTo(sx,sz-11); ctx.lineTo(sx,sz+11); ctx.stroke();
+    const tag = `${ap.apName || (ap.vendor && ap.vendor !== 'Unknown' ? ap.vendor + ' ' : '') + ap.ssid.slice(0,14)} (Ch${ap.ch}) ${Math.round(ap.rssi)}dBm`;
+    const tw = ctx.measureText(tag).width + 12, tx = sx + 14, ty = sz - 9 + (idx % 2) * 2;
+    ctx.fillStyle = '#fff'; ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 1.2; ctx.fillRect(tx, ty, tw, 18); ctx.strokeRect(tx, ty, tw, 18);
+    ctx.fillStyle = '#0f172a'; ctx.textAlign = 'left'; ctx.fillText(tag, tx + 6, ty + 9);
+  });
+  ctx.restore();
+
+  ctx.fillStyle = '#e2e8f0'; ctx.fillRect(0, 0, W, rulerT); ctx.fillRect(0, 0, rulerL, H);
+  ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(rulerL,rulerT); ctx.lineTo(W,rulerT); ctx.moveTo(rulerL,rulerT); ctx.lineTo(rulerL,H); ctx.stroke();
+  if (scale > 8) {
+    const stepM = scale < 20 ? 5 : (scale < 45 ? 2 : 1);
+    ctx.fillStyle = '#334155'; ctx.font = '10px ui-monospace, monospace';
+    for (let gx = Math.ceil(minX/stepM)*stepM; gx <= maxX; gx += stepM) { const sx = gx*scale+ox; if (sx>=mapX+10 && sx<=W-20) { ctx.textAlign='left'; ctx.fillText(`${Math.round(gx-minX)}m`, sx+3, 15); } }
+    for (let gz = Math.ceil(minZ/stepM)*stepM; gz <= maxZ; gz += stepM) { const sz = gz*scale+oz; if (sz>=mapY+12 && sz<=H-10) { ctx.textAlign='right'; ctx.fillText(`${Math.round(gz-minZ)}m`, rulerL-4, sz+3); } }
+  }
+  document.getElementById('surveyStats').textContent = `${currentSurvey.name} • Cisco Prime 2D • ${samples.length} pts • ${activeAPs.length} APs • ${walls.length} walls`;
+}
+
+function draw3DDNA() {
+  const canvas = document.getElementById('hmCanvas'), ctx = canvas.getContext('2d'), W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
+  const pts = currentSurvey.points || [], walls = cleanWalls(currentSurvey.walls), activeAPs = getActiveAPs(), samples = getFilteredSamples();
+  if (!pts.length && !walls.length) return;
+  const floorY = currentSurvey.floor_y ?? -1.2;
+  let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+  const ex = (x, z) => { minX = Math.min(minX, x); maxX = Math.max(maxX, x); minZ = Math.min(minZ, z); maxZ = Math.max(maxZ, z); };
+  pts.forEach(p => ex(p.x, p.z)); walls.forEach(w => { ex(w.x1, w.z1); ex(w.x2, w.z2); });
+  minX -= 2.2; maxX += 2.2; minZ -= 2.2; maxZ += 2.2;
+  const cx = (minX + maxX) / 2, cz = (minZ + maxZ) / 2, span = Math.max(7, maxX - minX, maxZ - minZ), scale = (Math.min(W, H) * 0.72 / span) * zoom3D;
+  const cy = Math.cos(yaw3D), sy = Math.sin(yaw3D), cp = Math.cos(pitch3D), sp = Math.sin(pitch3D);
+  function proj(wx, wy, wz) {
+    const x = wx - cx, y = wy - floorY, z = wz - cz, rx = x * cy - z * sy, rz = x * sy + z * cy, ry = y * cp - rz * sp, depth = y * sp + rz * cp + span * 1.55, persp = (span * 1.55) / Math.max(1.2, depth);
+    return { sx: W * 0.5 + rx * scale * persp, sy: H * 0.56 - ry * scale * persp, depth };
+  }
+
+  ctx.strokeStyle = 'rgba(148,163,184,0.25)'; ctx.lineWidth = 1;
+  for (let gx = Math.floor(minX-4); gx <= Math.ceil(maxX+4); gx += 2) { const a = proj(gx, floorY-0.03, minZ-4), b = proj(gx, floorY-0.03, maxZ+4); ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke(); }
+  for (let gz = Math.floor(minZ-4); gz <= Math.ceil(maxZ+4); gz += 2) { const a = proj(minX-4, floorY-0.03, gz), b = proj(maxX+4, floorY-0.03, gz); ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke(); }
+
+  const f1 = proj(minX, floorY, minZ), f2 = proj(maxX, floorY, minZ), f3 = proj(maxX, floorY, maxZ), f4 = proj(minX, floorY, maxZ);
+  ctx.beginPath(); ctx.moveTo(f1.sx,f1.sy); ctx.lineTo(f2.sx,f2.sy); ctx.lineTo(f3.sx,f3.sy); ctx.lineTo(f4.sx,f4.sy); ctx.closePath();
+  ctx.fillStyle = '#e52b2b'; ctx.fill(); ctx.strokeStyle = '#b91c1c'; ctx.lineWidth = 1.5; ctx.stroke();
+
+  const polys = [];
+  for (const w of walls) {
+    const y0 = floorY, y1 = floorY + Math.max(1.8, Math.min(2.8, (w.y_max ?? 1.4) - (w.y_min ?? -1.2)));
+    const p1 = proj(w.x1, y0, w.z1), p2 = proj(w.x2, y0, w.z2), p3 = proj(w.x2, y1, w.z2), p4 = proj(w.x1, y1, w.z1);
+    const shade = 165 + Math.round(Math.sin(Math.atan2(w.z2 - w.z1, w.x2 - w.x1) + yaw3D) * 35);
+    polys.push({ depth: (p1.depth+p2.depth+p3.depth+p4.depth)/4, pts: [p1,p2,p3,p4], fill: `rgb(${shade},${shade+3},${shade+8})`, stroke: `rgb(${shade-35},${shade-32},${shade-28})`, lw: 1 });
+  }
+  function addDome(cxW, czW, rXZ, hY, r, g, b, alpha) {
+    const sU = 18, sV = 7;
+    for (let iv = 0; iv < sV; iv++) {
+      const p0a = (iv/sV)*Math.PI*0.5, p1a = ((iv+1)/sV)*Math.PI*0.5;
+      for (let iu = 0; iu < sU; iu++) {
+        const t0 = (iu/sU)*Math.PI*2, t1 = ((iu+1)/sU)*Math.PI*2;
+        const pt3 = (ph, th) => proj(cxW+Math.cos(ph)*Math.cos(th)*rXZ, floorY+0.02+Math.sin(ph)*hY, czW+Math.cos(ph)*Math.sin(th)*rXZ);
+        const q0=pt3(p0a,t0), q1=pt3(p0a,t1), q2=pt3(p1a,t1), q3=pt3(p1a,t0);
+        const light = 0.72 + 0.28 * Math.max(0, Math.sin((p0a+p1a)*0.5)*0.8 + Math.cos((t0+t1)*0.5+yaw3D)*0.4);
+        polys.push({ depth: (q0.depth+q1.depth+q2.depth+q3.depth)/4, pts: [q0,q1,q2,q3], fill: `rgba(${Math.round(r*light)},${Math.round(g*light)},${Math.round(b*light)},${alpha})`, stroke: null, lw: 0 });
+      }
+    }
+  }
+  const domeAPs = [];
+  for (const ap of activeAPs) { if (!domeAPs.some(d => Math.hypot(d.x - ap.x, d.z - ap.z) < 0.8)) domeAPs.push(ap); }
+  const domesToDraw = domeAPs.length ? domeAPs : samples.slice(0, 6).map((s, i) => ({ x: s.x, z: s.z, rssi: s.v, ssid: `Pt-${i+1}`, ch: 0, vendor: '' }));
+  for (const ap of domesToDraw) {
+    const rG = ap.rssi >= -65 ? Math.max(1.2, Math.min(3.2, (ap.rssi + 73) * 0.14)) : 0;
+    const rA = ap.rssi >= -75 ? Math.max(2.0, Math.min(4.8, (ap.rssi + 84) * 0.16)) : 0;
+    if (rG > 0) addDome(ap.x, ap.z, rG, Math.min(2.1, rG * 0.78), 18, 152, 46, 0.86);
+    if (rA > 0) addDome(ap.x, ap.z, rA, Math.min(2.6, rA * 0.65), 245, 166, 35, 0.58);
+  }
+  polys.sort((a, b) => b.depth - a.depth);
+  for (const q of polys) {
+    ctx.beginPath(); ctx.moveTo(q.pts[0].sx, q.pts[0].sy); for (let i = 1; i < q.pts.length; i++) ctx.lineTo(q.pts[i].sx, q.pts[i].sy); ctx.closePath();
+    ctx.fillStyle = q.fill; ctx.fill(); if (q.stroke) { ctx.strokeStyle = q.stroke; ctx.lineWidth = q.lw; ctx.stroke(); }
+  }
+  for (const ap of domesToDraw) {
+    const base = proj(ap.x, floorY + 0.08, ap.z), tip = proj(ap.x, floorY + (ap.rssi >= -65 ? 2.4 : 2.1), ap.z);
+    ctx.fillStyle = '#f8fafc'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1; ctx.fillRect(base.sx-5, base.sy-3, 10, 6); ctx.strokeRect(base.sx-5, base.sy-3, 10, 6);
+    const score = ap.rssi >= -58 ? 10 : (ap.rssi >= -65 ? 9 : (ap.rssi >= -72 ? 7 : 6)), pinCol = score >= 8 ? '#16a34a' : '#f59e0b';
+    ctx.save(); ctx.translate(tip.sx, tip.sy);
+    ctx.fillStyle = pinCol; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.moveTo(0,12); ctx.bezierCurveTo(-13,0,-14,-18,0,-18); ctx.bezierCurveTo(14,-18,13,0,0,12); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(score), 0, -6);
+    const apTitle = ap.apName || `${ap.vendor && ap.vendor !== 'Unknown' ? ap.vendor + '-' : ''}${ap.ssid.slice(0,10)}-Ch${ap.ch}`;
+    ctx.fillStyle = '#1e293b'; ctx.font = '600 13px Georgia, serif'; ctx.textAlign = 'left'; ctx.fillText(apTitle, 16, -6);
+    ctx.restore();
+  }
+  document.getElementById('surveyStats').textContent = `${currentSurvey.name} • Cisco DNA 3D Analyzer • ${domesToDraw.length} AP domes • ${walls.length} walls`;
+}
+
+const hmCanvas = document.getElementById('hmCanvas');
+hmCanvas.addEventListener('pointerdown', e => { if (viewMode === '3d') { dragging = true; lastMx = e.clientX; lastMy = e.clientY; } });
+window.addEventListener('pointerup', () => dragging = false);
+window.addEventListener('pointermove', e => { if (!dragging || viewMode !== '3d') return; yaw3D += (e.clientX - lastMx) * 0.008; pitch3D = Math.max(0.18, Math.min(1.45, pitch3D + (e.clientY - lastMy) * 0.008)); lastMx = e.clientX; lastMy = e.clientY; draw3DDNA(); });
+hmCanvas.addEventListener('wheel', e => { if (viewMode !== '3d') return; e.preventDefault(); zoom3D = Math.max(0.45, Math.min(3.0, zoom3D * (e.deltaY > 0 ? 0.92 : 1.08))); draw3DDNA(); }, { passive: false });
+function exportPng() { const a = document.createElement('a'); a.download = `${(currentSurvey && currentSurvey.id) || 'cisco_survey'}_${viewMode}.png`; a.href = hmCanvas.toDataURL('image/png'); a.click(); }
+
+connectSSE();
+</script>
+</body>
+</html>
