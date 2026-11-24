@@ -7,15 +7,57 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		17355B729D7EFB67DF3C0D1D /* LidarTestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0781925217445A77124AD06A /* LidarTestApp.swift */; };
+		03507C1C74A95482397682E3 /* SavedMapsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A60D9E10B7B5A6367FE87E /* SavedMapsSheet.swift */; };
+		234B059BBF19D9131FB5BDEE /* SurveyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576FC7FA7BACB5B7F35D4E7C /* SurveyStore.swift */; };
+		32F119D897845A90D955348B /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68145D774F26FE81D6ECEEFC /* SettingsSheet.swift */; };
+		35D333E1A4BD2F89D824BBF7 /* APInspectorSheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA22DECA84C2B7BF1C7AEBE /* APInspectorSheets.swift */; };
+		398E08AFB5EEA605DCEE0E6B /* CiscoFloorplanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D849971D0609898B2A18397 /* CiscoFloorplanView.swift */; };
+		45728D84ACCA2ECB948EA02D /* FloorplanCalibrationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A95042EA45BF5B141A7901 /* FloorplanCalibrationSheet.swift */; };
+		4A1384165EF179D16AC08AFB /* RoomPlan3DSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50286F898E83A2B26D020FAE /* RoomPlan3DSceneView.swift */; };
+		557BBE616484F4F8055DB984 /* LidarTestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12490485F5EF9ADFC981273 /* LidarTestApp.swift */; };
+		5B629A402316167DCC173DAF /* WlanPiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F338EFF28AC44894ADCAE761 /* WlanPiClient.swift */; };
+		768DB2491FE884C839E0740C /* ChannelSpectrumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FF0E3097D44B4FF277A2A0 /* ChannelSpectrumView.swift */; };
+		8E438CAA1032114D9ED277D5 /* CiscoColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD42B62DEB8AFF7F6C7EC2CE /* CiscoColors.swift */; };
+		949A4C5D7530DECBB10B16AD /* DemoSurveyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBC3CCA4BE80B6E8DFF4129 /* DemoSurveyFactory.swift */; };
+		AD79F3DD1FF355FCCBA96DFD /* CiscoHeatmapRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FFB81A7539E5294F38F7D8 /* CiscoHeatmapRenderer.swift */; };
+		B312AC33D556E716ED89C0C5 /* SurveyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0696FCD61AC18067416909D8 /* SurveyModels.swift */; };
+		B48BD47633F7426717EE5D78 /* SurveyReportExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885F12BE796CF5DDB678B0CF /* SurveyReportExporter.swift */; };
+		C1E44676472CF3E82396AE7A /* RoomPlanCaptureContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6084CC7AA582BD1D6915320A /* RoomPlanCaptureContainer.swift */; };
+		F88E6A383AEB15AE59ADC0B7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF2BEC1D7129B3D8D368A60 /* ContentView.swift */; };
+		FBF715BCEBF176AB92DA79BB /* SurveyPointInspectorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4711153659D5CD762C9B0F4 /* SurveyPointInspectorSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0781925217445A77124AD06A /* LidarTestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LidarTestApp.swift; sourceTree = "<group>"; };
+		0696FCD61AC18067416909D8 /* SurveyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyModels.swift; sourceTree = "<group>"; };
+		08FFB81A7539E5294F38F7D8 /* CiscoHeatmapRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CiscoHeatmapRenderer.swift; sourceTree = "<group>"; };
+		1EBC3CCA4BE80B6E8DFF4129 /* DemoSurveyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoSurveyFactory.swift; sourceTree = "<group>"; };
 		2EEFD706F98967A7ECDC9096 /* LidarTest.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LidarTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		43A60D9E10B7B5A6367FE87E /* SavedMapsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedMapsSheet.swift; sourceTree = "<group>"; };
+		50286F898E83A2B26D020FAE /* RoomPlan3DSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomPlan3DSceneView.swift; sourceTree = "<group>"; };
+		576FC7FA7BACB5B7F35D4E7C /* SurveyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyStore.swift; sourceTree = "<group>"; };
+		6084CC7AA582BD1D6915320A /* RoomPlanCaptureContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomPlanCaptureContainer.swift; sourceTree = "<group>"; };
+		68145D774F26FE81D6ECEEFC /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
+		6AF2BEC1D7129B3D8D368A60 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7D849971D0609898B2A18397 /* CiscoFloorplanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CiscoFloorplanView.swift; sourceTree = "<group>"; };
+		885F12BE796CF5DDB678B0CF /* SurveyReportExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyReportExporter.swift; sourceTree = "<group>"; };
+		A12490485F5EF9ADFC981273 /* LidarTestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LidarTestApp.swift; sourceTree = "<group>"; };
+		A4711153659D5CD762C9B0F4 /* SurveyPointInspectorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyPointInspectorSheet.swift; sourceTree = "<group>"; };
+		B9A95042EA45BF5B141A7901 /* FloorplanCalibrationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorplanCalibrationSheet.swift; sourceTree = "<group>"; };
+		DBA22DECA84C2B7BF1C7AEBE /* APInspectorSheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APInspectorSheets.swift; sourceTree = "<group>"; };
+		E4FF0E3097D44B4FF277A2A0 /* ChannelSpectrumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelSpectrumView.swift; sourceTree = "<group>"; };
+		F338EFF28AC44894ADCAE761 /* WlanPiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WlanPiClient.swift; sourceTree = "<group>"; };
+		FD42B62DEB8AFF7F6C7EC2CE /* CiscoColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CiscoColors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		04AD8AA179B5FDCDED93547E /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A12490485F5EF9ADFC981273 /* LidarTestApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
 		065A6B9A9C73F026288DAD9C /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -24,10 +66,73 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1F45D1E1878C9ED2A5EFA450 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7D849971D0609898B2A18397 /* CiscoFloorplanView.swift */,
+				6AF2BEC1D7129B3D8D368A60 /* ContentView.swift */,
+				50286F898E83A2B26D020FAE /* RoomPlan3DSceneView.swift */,
+				9786366AC7DEE2A97BB79BF7 /* Sheets */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3488620F8245A35B8E74F567 /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				885F12BE796CF5DDB678B0CF /* SurveyReportExporter.swift */,
+			);
+			path = Export;
+			sourceTree = "<group>";
+		};
+		39A0383AB074EEDA4369B684 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				576FC7FA7BACB5B7F35D4E7C /* SurveyStore.swift */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		587AE0442A3E354CF3DA4208 /* RoomPlan */ = {
+			isa = PBXGroup;
+			children = (
+				6084CC7AA582BD1D6915320A /* RoomPlanCaptureContainer.swift */,
+			);
+			path = RoomPlan;
+			sourceTree = "<group>";
+		};
+		59E9142D81749FB79AF6CE43 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0696FCD61AC18067416909D8 /* SurveyModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9786366AC7DEE2A97BB79BF7 /* Sheets */ = {
+			isa = PBXGroup;
+			children = (
+				DBA22DECA84C2B7BF1C7AEBE /* APInspectorSheets.swift */,
+				E4FF0E3097D44B4FF277A2A0 /* ChannelSpectrumView.swift */,
+				B9A95042EA45BF5B141A7901 /* FloorplanCalibrationSheet.swift */,
+				43A60D9E10B7B5A6367FE87E /* SavedMapsSheet.swift */,
+				68145D774F26FE81D6ECEEFC /* SettingsSheet.swift */,
+				A4711153659D5CD762C9B0F4 /* SurveyPointInspectorSheet.swift */,
+			);
+			path = Sheets;
+			sourceTree = "<group>";
+		};
 		9BD44ACFB630092AB52135F3 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				0781925217445A77124AD06A /* LidarTestApp.swift */,
+				04AD8AA179B5FDCDED93547E /* App */,
+				3488620F8245A35B8E74F567 /* Export */,
+				59E9142D81749FB79AF6CE43 /* Models */,
+				B095CECD64C55CE887C32D22 /* Networking */,
+				D009D609C786A221BBE94415 /* Rendering */,
+				587AE0442A3E354CF3DA4208 /* RoomPlan */,
+				39A0383AB074EEDA4369B684 /* Store */,
+				1F45D1E1878C9ED2A5EFA450 /* Views */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -38,6 +143,24 @@
 				9BD44ACFB630092AB52135F3 /* Sources */,
 				065A6B9A9C73F026288DAD9C /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		B095CECD64C55CE887C32D22 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				1EBC3CCA4BE80B6E8DFF4129 /* DemoSurveyFactory.swift */,
+				F338EFF28AC44894ADCAE761 /* WlanPiClient.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		D009D609C786A221BBE94415 /* Rendering */ = {
+			isa = PBXGroup;
+			children = (
+				FD42B62DEB8AFF7F6C7EC2CE /* CiscoColors.swift */,
+				08FFB81A7539E5294F38F7D8 /* CiscoHeatmapRenderer.swift */,
+			);
+			path = Rendering;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +218,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17355B729D7EFB67DF3C0D1D /* LidarTestApp.swift in Sources */,
+				35D333E1A4BD2F89D824BBF7 /* APInspectorSheets.swift in Sources */,
+				768DB2491FE884C839E0740C /* ChannelSpectrumView.swift in Sources */,
+				8E438CAA1032114D9ED277D5 /* CiscoColors.swift in Sources */,
+				398E08AFB5EEA605DCEE0E6B /* CiscoFloorplanView.swift in Sources */,
+				AD79F3DD1FF355FCCBA96DFD /* CiscoHeatmapRenderer.swift in Sources */,
+				F88E6A383AEB15AE59ADC0B7 /* ContentView.swift in Sources */,
+				949A4C5D7530DECBB10B16AD /* DemoSurveyFactory.swift in Sources */,
+				45728D84ACCA2ECB948EA02D /* FloorplanCalibrationSheet.swift in Sources */,
+				557BBE616484F4F8055DB984 /* LidarTestApp.swift in Sources */,
+				4A1384165EF179D16AC08AFB /* RoomPlan3DSceneView.swift in Sources */,
+				C1E44676472CF3E82396AE7A /* RoomPlanCaptureContainer.swift in Sources */,
+				03507C1C74A95482397682E3 /* SavedMapsSheet.swift in Sources */,
+				32F119D897845A90D955348B /* SettingsSheet.swift in Sources */,
+				B312AC33D556E716ED89C0C5 /* SurveyModels.swift in Sources */,
+				FBF715BCEBF176AB92DA79BB /* SurveyPointInspectorSheet.swift in Sources */,
+				B48BD47633F7426717EE5D78 /* SurveyReportExporter.swift in Sources */,
+				234B059BBF19D9131FB5BDEE /* SurveyStore.swift in Sources */,
+				5B629A402316167DCC173DAF /* WlanPiClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,8 +253,6 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.winniethesuii.LidarTest;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -122,55 +260,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 9;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"DEBUG=1",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -193,8 +291,6 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.winniethesuii.LidarTest;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -202,49 +298,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 9;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
+				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

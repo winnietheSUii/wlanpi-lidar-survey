@@ -3,20 +3,58 @@ options:
   bundleIdPrefix: com.winniethesuii
 settings:
   base:
+    ALWAYS_SEARCH_USER_PATHS: "NO"
     IPHONEOS_DEPLOYMENT_TARGET: "17.0"
     TARGETED_DEVICE_FAMILY: "1,2"
+    PRODUCT_NAME: "$(TARGET_NAME)"
+    SDKROOT: iphoneos
     SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "9"
+    CLANG_ENABLE_MODULES: "YES"
+    CLANG_ENABLE_OBJC_ARC: "YES"
+    COPY_PHASE_STRIP: "NO"
+    MTL_FAST_MATH: "YES"
+  configs:
+    Debug:
+      DEBUG_INFORMATION_FORMAT: dwarf
+      ENABLE_TESTABILITY: "YES"
+      GCC_OPTIMIZATION_LEVEL: "0"
+      ONLY_ACTIVE_ARCH: "YES"
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+      SWIFT_OPTIMIZATION_LEVEL: "-Onone"
+    Release:
+      DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+      ENABLE_NS_ASSERTIONS: "NO"
+      SWIFT_COMPILATION_MODE: wholemodule
+      SWIFT_OPTIMIZATION_LEVEL: "-O"
 targets:
   LidarTest:
     type: application
     platform: iOS
+    settings:
+      base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_IDENTITY: "iPhone Developer"
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/Frameworks"
     sources:
-      - Sources
+      - path: Sources
+        excludes:
+          - "**/*.bak"
     info:
       path: Info.plist
       properties:
-        CFBundleDisplayName: LidarTest
+        CFBundleDisplayName: "WiFi LiDAR Survey"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         UILaunchScreen: {}
         NSCameraUsageDescription: "Required for ARKit position tracking and LiDAR mesh scanning"
+        NSLocalNetworkUsageDescription: "Required to connect to WLAN Pi RF survey probe over USB-C Ethernet or local network"
+        NSBonjourServices:
+          - _wifisurvey._tcp
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
         UIRequiredDeviceCapabilities:
           - arkit
