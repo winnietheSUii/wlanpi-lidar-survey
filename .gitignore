@@ -1,0 +1,16 @@
+# Build & IPA artifacts
+build/
+ipa-staging/
+Payload/
+*.ipa
+*.bak
+
+# Xcode & macOS
+.DS_Store
+*.xcuserdatad
+*.xcworkspace/xcuserdata/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM

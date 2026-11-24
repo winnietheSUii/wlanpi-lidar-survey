@@ -1,0 +1,22 @@
+name: LidarTest
+options:
+  bundleIdPrefix: com.winniethesuii
+settings:
+  base:
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    SWIFT_VERSION: "5.0"
+targets:
+  LidarTest:
+    type: application
+    platform: iOS
+    sources:
+      - Sources
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: LidarTest
+        UILaunchScreen: {}
+        NSCameraUsageDescription: "Required for ARKit position tracking and LiDAR mesh scanning"
+        UIRequiredDeviceCapabilities:
+          - arkit
